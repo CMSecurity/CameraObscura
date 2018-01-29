@@ -8,8 +8,11 @@ IP Cam Honeypot
   - [ ] Fake camera stream
 - [ ] Web Interface
   - [ ] Clone existing to simulate running vulnerable IP-Cams
-- [ ] JSON Logging of login attempts
-- [ ] Fake other services (like RTSP 
+- [ ] Logging
+  - [ ] JSON
+  - [ ] Log
+  - [ ] SQL
+- [ ] Fake other services (like RTSP)
   - [ ] RTSP 
   - [ ] SSH/ Telnet (using cowrie)
 - [ ] Configuration
