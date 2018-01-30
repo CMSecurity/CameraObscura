@@ -23,6 +23,11 @@ IP Cam Honeypot
   - [ ] Branding
   - [ ] Service/ Port redirect
   - [ ] Routes
+- [ ] Deployment/ Analysis/ Usage
+  - [ ] CLI Commands (like `start` or `restart`)
+  - [ ] Docker Image 
+  - [ ] Splunk/ ELK Usage
+  - [ ] Upgrade process
 
 ## Requirements
 
