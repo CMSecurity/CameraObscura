@@ -7,7 +7,7 @@ This module http related functionality
 
 from jsonpickle import decode
 from flask import Flask, request, abort, send_file, make_response
-from core import config, logging
+from core import config, logging, auth
 from datetime import datetime
 import re
 app = Flask(__name__)
@@ -58,9 +58,7 @@ def authorize(route: object, request: request):
     user, password = tryToFindPassword(request.form)
 
   # Verify with user db
-
-  
-  return False
+  return  auth.isAuthorized(user, password)
 
 def tryToFindPassword(haystack: dict) -> (str, str):
   userNameRegex=config.getConfigurationValue("http","usernameregex")

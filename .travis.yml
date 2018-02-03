@@ -12,3 +12,4 @@ script:
   - python ./tests/ConfigTestCase.py
   - python ./tests/LogTestCase.py
   - python ./tests/HTTPTestCase.py
+  - python ./tests/AuthTestCase.py
