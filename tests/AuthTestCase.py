@@ -22,5 +22,11 @@ class AuthTestCase(CameraTestCase.CameraTestCase):
         got=auth.isAuthorized("notlisted","root2")
 
         self.assertEqual(got, True)
+
+    def test_isAuthorizedEmptyPasswordAndUser(self):
+        from core import auth
+        got=auth.isAuthorized("","")
+
+        self.assertEqual(got, False)
 if __name__ == '__main__':
     unittest.main()

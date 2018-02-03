@@ -40,7 +40,6 @@ def isAuthorized(userName: str, password: str) -> bool:
         break
       
       if lineUser == userName and linePw == password and forbidden == True:
-        print("foo")
         successfull = False
         break
 
