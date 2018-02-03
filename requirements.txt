@@ -2,3 +2,4 @@
 jsonpickle==0.9.5
 configparser==3.5.0
 Flask==0.12.2
+Pillow==5.0.0
