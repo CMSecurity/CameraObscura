@@ -1,4 +1,4 @@
-# Copyright (c) 2018 RoastinMalware
+# Copyright (c) 2018 RoastingMalware
 # See the LICENSE file for more information
 
 """
@@ -6,6 +6,8 @@ This module contains any logic to parse the config file
 """
 import configparser
 import os
+
+CONFIG = None
 
 def getConfiguration(cfgfile: str) -> object:
     """
@@ -37,4 +39,3 @@ def getConfigurationValue(section: str, key: str):
    
     return None
 
-CONFIG = None

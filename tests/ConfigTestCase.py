@@ -3,7 +3,7 @@ import unittest
 import os
 import sys
 
-class CameraTestCase(CameraTestCase.CameraTestCase):
+class ConfigTestCase(CameraTestCase.CameraTestCase):
     def test_getConfigurationCorrectFile(self):
         file=os.path.join(self.parentDir,"configuration.cfg")
         
