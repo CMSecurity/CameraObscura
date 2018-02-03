@@ -142,6 +142,7 @@ def serve(path: str):
   ROUTES=parseRoutes("routes.json")
   app.run(
         debug=True,
+        host=127.0.0.1
         port=int(config.getConfigurationValue("http","port"))
     )
  
