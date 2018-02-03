@@ -12,6 +12,7 @@ from core import config
 
 EVENT_ID_STARTED="obscura.sensor.started"
 EVENT_ID_HTTP="obscura.sensor.http"
+EVENT_ID_LOGIN="obscura.http.login"
 
 class LogEntry():
   eventId: ""

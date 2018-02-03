@@ -13,6 +13,35 @@
       "X-Powered-By": "PHP/5.3.7"
     }
   },
+  "login.php":{
+    "actions": [
+      "servefile",
+      "log"
+    ],
+    "servefile":{
+      "file": "/ugly/login.html",
+      "render_template": true
+    },
+    "headers": {
+      "Server": "Apache",
+      "X-Powered-By": "PHP/5.3.7"
+    }
+  },
+  "admin.php":{
+    "actions": [
+      "authorize",
+      "servefile",
+      "log"
+    ],
+    "servefile":{
+      "file": "/ugly/admin.html",
+      "render_template": true
+    },
+    "headers": {
+      "Server": "Apache",
+      "X-Powered-By": "PHP/5.3.7"
+    }
+  },
   "jquery.min.js":{
     "actions": [
       "servefile",

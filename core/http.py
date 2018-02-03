@@ -31,6 +31,7 @@ def parseRoutes(file: str) -> object:
   obj = decode(content)
   return obj
 
+
 @app.after_request
 def add_header(response):
   route = LASTROUTE
@@ -99,7 +100,14 @@ def authorize(route: object, request: request) -> bool:
     user, password = tryToFindPassword(request.form)
 
   # Verify with user db
-  return  auth.isAuthorized(user, password)
+  authResult=auth.isAuthorized(user, password)
+  message = ""
+  if authResult:
+    message = "Login attempt [{0}/{1}] succeeded".format(user, password)
+  else: 
+    message = "Login attempt [{0}/{1}] succeeded".format(user, password) 
+  logging.log(logging.EVENT_ID_LOGIN,datetime.now(),message,"http",False,request.remote_addr,0.0,"")
+  return authResult
 
 def tryToFindPassword(haystack: dict) -> (str, str):
   userNameRegex=config.getConfigurationValue("http","usernameregex")
