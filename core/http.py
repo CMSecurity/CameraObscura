@@ -50,13 +50,13 @@ def log(method: str, src_ip: str):
 def servefile(route: object, request: request):
   return send_file(route["servefile"]["file"], as_attachment=False)
 
-def authorize(route: object, request: request):
+def authorize(route: object, request: request) -> bool:
 
   # extract credentials
   user, password = tryToFindPassword(request.args)
   if request.method == "POST":
     user, password = tryToFindPassword(request.form)
-
+  
   # Verify with user db
   return  auth.isAuthorized(user, password)
 

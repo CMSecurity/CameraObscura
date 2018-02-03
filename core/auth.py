@@ -18,6 +18,8 @@ class Credentials():
 
 def isAuthorized(userName: str, password: str) -> bool:
   content = ""
+  if userName == "" or password == "":
+    return False
   a = open("userdb.txt","r")
   lineRegex=r"(?P<username>[^:]+):x:(?P<password>.+)"
   p = re.compile(lineRegex)
