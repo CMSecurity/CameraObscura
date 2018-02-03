@@ -37,4 +37,4 @@ def getConfigurationValue(section: str, key: str):
    
     return None
 
-CONFIG = {}
+CONFIG = None
