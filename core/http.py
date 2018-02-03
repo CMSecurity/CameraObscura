@@ -35,11 +35,20 @@ def parseRoutes(file: str) -> object:
 @app.after_request
 def add_header(response):
   route = LASTROUTE
-  if "headers" in route:
-    for key, value in route["headers"].items():
-      response.headers[key] = value
-  
+  if route != None:
+    if "headers" in route:
+      for key, value in route["headers"].items():
+        response.headers[key] = value 
   return response  
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+@app.errorhandler(403)
+def page_not_found(e):
+    return render_template('403.html'), 403 
 
 @app.route('/', defaults={'path': ''}, methods = ['POST', 'GET'])
 @app.route('/<path:path>', methods = ['POST', 'GET'])
