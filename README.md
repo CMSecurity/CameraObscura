@@ -2,6 +2,8 @@
 
 IP Cam Honeypot
 
+[![Build Status](https://travis-ci.org/RoastingMalware/CameraObscura.svg?branch=master)](https://travis-ci.org/RoastingMalware/CameraObscura)
+
 ## (planned) Features
 
 - [ ] Fake Camera Endpoint (for HTTP `POST`/ `GET` etc.)
