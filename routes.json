@@ -13,6 +13,20 @@
       "X-Powered-By": "PHP/5.3.7"
     }
   },
+  "":{
+    "actions": [
+      "servefile",
+      "log"
+    ],
+    "servefile":{
+      "file": "/ugly/index.html",
+      "render_template": true
+    },
+    "headers": {
+      "Server": "Apache",
+      "X-Powered-By": "PHP/5.3.7"
+    }
+  },
   "login.php":{
     "actions": [
       "servefile",
