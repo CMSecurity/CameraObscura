@@ -9,6 +9,7 @@ from jsonpickle import decode
 from flask import Flask, request, abort, send_file, make_response
 from core import config, logging, auth
 from datetime import datetime
+from random import randint
 import re
 app = Flask(__name__)
 ROUTES=None
@@ -48,7 +49,11 @@ def log(method: str, src_ip: str):
   logging.log(logging.EVENT_ID_HTTP, datetime.now(), "HTTP-{0} Request".format(method), "http", False, src_ip,0.0, "")
 
 def servefile(route: object, request: request):
-  return send_file(route["servefile"]["file"], as_attachment=False)
+  file = route["servefile"]["file"]
+  if isinstance(file, list):
+    return send_file(file[randint(0, len(file) -1)], as_attachment=False)
+  else:
+    return send_file(file, as_attachment=False)
 
 def authorize(route: object, request: request) -> bool:
 
@@ -56,7 +61,7 @@ def authorize(route: object, request: request) -> bool:
   user, password = tryToFindPassword(request.args)
   if request.method == "POST":
     user, password = tryToFindPassword(request.form)
-  
+
   # Verify with user db
   return  auth.isAuthorized(user, password)
 
@@ -81,6 +86,7 @@ def serve():
   global ROUTES
   ROUTES=parseRoutes("routes.json")
   app.run(
-        debug=True
+        debug=True,
+        port=int(config.getConfigurationValue("http","port"))
     )
  
