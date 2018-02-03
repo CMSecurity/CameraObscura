@@ -11,6 +11,7 @@ from jsonpickle import encode
 from core import config
 
 EVENT_ID_STARTED="obscura.sensor.started"
+EVENT_ID_HTTP="obscura.sensor.http"
 
 class LogEntry():
   eventId: ""
@@ -45,11 +46,21 @@ def log(eventId: str, timestamp: datetime, message: str, system: str, isError: b
     return globals()[selectedLogMethod](entry)
   return False
 
-def stdout(entry: LogEntry) -> bool:
+def stdout(entry: LogEntry) -> bool:  
+  """
+  Protocol entry
+  @param entry: the log entry to protocol
+  @return: operation success state
+  """
   print(entry)
   return True
 
-def json(entry: LogEntry) -> bool:
+def json(entry: LogEntry) -> bool: 
+  """
+  Protocol entry
+  @param entry: the log entry to protocol
+  @return: operation success state
+  """
   content = encodeLogEntry(entry)
   result = True
   try: 
@@ -60,6 +71,11 @@ def json(entry: LogEntry) -> bool:
   return result
 
 def text(entry: LogEntry) -> bool:
+  """
+  Protocol entry
+  @param entry: the log entry to protocol
+  @return: operation success state
+  """
   result = True
   try: 
     with open("obscura.json", 'a') as f:
@@ -69,4 +85,9 @@ def text(entry: LogEntry) -> bool:
   return result
 
 def encodeLogEntry(logEntry: LogEntry) -> str:
+  """
+  Encodes a log Entry to JSON
+  @param entry: the log entry
+  @return: the JSON string
+  """
   return encode(logEntry, unpicklable=False)

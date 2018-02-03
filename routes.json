@@ -1,0 +1,25 @@
+{
+  "test/": {
+    "actions": [
+      "log",
+      "text"
+    ],
+    "text":{
+      "text":"I'm a honeypot."
+    }
+  },  
+  "auth/": {
+    "actions": [
+      "log",
+      "authorize"
+    ]
+  },
+  "file/": {
+    "actions": [
+      "servefile"
+    ],
+    "servefile":{
+      "file": "/home/chrism/Dokumente/CameraObscura/core/http.py"
+    }
+  }
+}
