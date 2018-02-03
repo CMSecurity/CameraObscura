@@ -10,9 +10,13 @@ from flask import Flask, request, abort, send_file, make_response
 from core import config, logging, auth
 from datetime import datetime
 from random import randint
+import pathlib
+from PIL import Image, ImageDraw, ImageEnhance
+from os import path
 import re
 app = Flask(__name__)
 ROUTES=None
+ROOT=""
 
 def parseRoutes(file: str) -> object:
   content = ""
@@ -50,10 +54,29 @@ def log(method: str, src_ip: str):
 
 def servefile(route: object, request: request):
   file = route["servefile"]["file"]
+  
   if isinstance(file, list):
-    return send_file(file[randint(0, len(file) -1)], as_attachment=False)
+    fileToServe = file[randint(0, len(file) -1)]
   else:
-    return send_file(file, as_attachment=False)
+    fileToServe = file
+  
+
+  if path.exists(path.abspath(fileToServe)):
+    fileToServe=path.abspath(fileToServe)
+  
+  pathInfo = pathlib.Path(fileToServe)
+  if "watermark" in route["servefile"] and route["servefile"]["watermark"] and pathInfo.suffix.replace(".","") in config.getConfigurationValue("image","images").replace(r"\s","").split(","):
+    tmpPath = path.join(config.getConfigurationValue("image","workdir"), pathInfo.name + pathInfo.suffix)
+    now = datetime.now().isoformat()
+    original = Image.open(fileToServe)
+    watermark = Image.new("RGBA", original.size)
+    waterdraw = ImageDraw.ImageDraw(watermark, "RGBA")
+    waterdraw.text((4, 2), "%s %s" % (config.getConfigurationValue("image","watermark"), now))
+    original.paste(watermark, None, watermark)
+    original.save(tmpPath)
+    return send_file(tmpPath, as_attachment=False)
+
+  return send_file(fileToServe, as_attachment=False)
 
 def authorize(route: object, request: request) -> bool:
 
@@ -82,8 +105,10 @@ def tryToFindPassword(haystack: dict) -> (str, str):
   
   return (userName, password)
 
-def serve():
+def serve(path: str):
   global ROUTES
+  global ROOT
+  ROOT = path
   ROUTES=parseRoutes("routes.json")
   app.run(
         debug=True,

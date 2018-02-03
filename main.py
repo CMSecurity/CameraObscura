@@ -1,5 +1,5 @@
 
 from core import http
 
-http.serve()
+http.serve(__file__)
 
