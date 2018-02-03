@@ -1,25 +1,44 @@
 {
-  "test/": {
+  "index.php":{
     "actions": [
-      "log",
-      "text"
-    ],
-    "text":{
-      "text":"I'm a honeypot."
-    }
-  },  
-  "auth/": {
-    "actions": [
-      "log",
-      "authorize"
-    ]
-  },
-  "file/": {
-    "actions": [
-      "servefile"
+      "servefile",
+      "log"
     ],
     "servefile":{
-      "file": "/home/chrism/Dokumente/CameraObscura/core/http.py"
+      "file": "/ugly/index.html",
+      "render_template": true
+    },
+    "headers": {
+      "Server": "Apache",
+      "X-Powered-By": "PHP/5.3.7"
+    }
+  },
+  "jquery.min.js":{
+    "actions": [
+      "servefile",
+      "log"
+    ],
+    "servefile":{
+      "file": "templates/ugly/jquery.min.js"
+    },
+    "headers": {
+      "Server": "Apache"
+    }
+  },
+  "image": {
+    "actions": [
+      "servefile",
+      "log"
+    ],
+    "servefile":{
+      "file": [
+        "images/0.jpg",
+        "images/1.jpeg"
+      ],
+      "watermark": true
+    },
+    "headers": {
+      "Server": "RTSP-Stream"
     }
   }
 }

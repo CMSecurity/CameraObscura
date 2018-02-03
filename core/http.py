@@ -6,7 +6,7 @@ This module http related functionality
 """
 
 from jsonpickle import decode
-from flask import Flask, request, abort, send_file, make_response
+from flask import Flask, request, abort, send_file, make_response, send_from_directory, render_template
 from core import config, logging, auth
 from datetime import datetime
 from random import randint
@@ -14,9 +14,11 @@ import pathlib
 from PIL import Image, ImageDraw, ImageEnhance
 from os import path
 import re
-app = Flask(__name__)
+app = Flask(__name__, template_folder='../templates')
+app.url_map.strict_slashes = False
 ROUTES=None
 ROOT=""
+LASTROUTE=None
 
 def parseRoutes(file: str) -> object:
   content = ""
@@ -29,12 +31,23 @@ def parseRoutes(file: str) -> object:
   obj = decode(content)
   return obj
 
+@app.after_request
+def add_header(response):
+  route = LASTROUTE
+  if "headers" in route:
+    for key, value in route["headers"].items():
+      response.headers[key] = value
+  
+  return response  
+
 @app.route('/', defaults={'path': ''}, methods = ['POST', 'GET'])
 @app.route('/<path:path>', methods = ['POST', 'GET'])
 def handleRoute(path):
   global ROUTES
+  global LASTROUTE
   if path in ROUTES:
     route = ROUTES[path]
+    LASTROUTE = route
     for action in route["actions"]:
       if action == "log":
         log(request.method, request.remote_addr)
@@ -60,7 +73,6 @@ def servefile(route: object, request: request):
   else:
     fileToServe = file
   
-
   if path.exists(path.abspath(fileToServe)):
     fileToServe=path.abspath(fileToServe)
   
@@ -75,7 +87,8 @@ def servefile(route: object, request: request):
     original.paste(watermark, None, watermark)
     original.save(tmpPath)
     return send_file(tmpPath, as_attachment=False)
-
+  if "render_template" in route["servefile"] and route["servefile"]["render_template"] == True:
+    return render_template(route["servefile"]["file"], config=config)
   return send_file(fileToServe, as_attachment=False)
 
 def authorize(route: object, request: request) -> bool:

@@ -1,0 +1,15 @@
+<html>
+<head>
+ <title>IPCAM</title> 
+ <script src="jquery.min.js"></script>
+</head>
+<body style="background-color:grey; text-align:center">
+  <h2>IPCAM Viewer</h2>
+  <a href="/login.php">login</a>
+  <br>
+  <img style="min-width: 41%;" src="image/">
+  <p style="width:100%; position:absolute; bottom: 0px; width: 95%; text-align: left">
+    Firmware version {{ config.getConfigurationValue("honeypot","firmware") }}
+  </p>
+</body>
+</html>
