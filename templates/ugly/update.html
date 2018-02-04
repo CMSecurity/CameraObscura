@@ -1,0 +1,16 @@
+<html>
+<head>
+ <title>IPCAM</title> 
+ <script src="jquery.min.js"></script>
+</head>
+<body style="background-color:grey; text-align:center">
+    <h2>Firmware update</h2>
+    <p>
+      Current firmware: {{ config.getConfigurationValue("honeypot","firmware") }}
+    </p>
+    <p>
+      Firmware update successfully!
+    </p>
+  {% include 'ugly/footer.html' %}
+</body>
+</html>

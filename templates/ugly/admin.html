@@ -4,11 +4,44 @@
  <script src="jquery.min.js"></script>
 </head>
 <body style="background-color:grey; text-align:center">
-  <form action="login.php" method="GET">
     <h2>Admin panel</h2>
-   
-  </form>
-
+    <table border="1" frame="void" rules="all" style="width: 50%; text-align:center; border: 1px solid black; margin-left: auto; margin-right: auto">
+      <tr>
+        <th>
+            Model
+        </th>
+        <td>
+            {{ config.getConfigurationValue("honeypot","model") }}
+        </td>
+      </tr>
+      <tr>
+          <th>
+              Serial Number
+          </th>
+          <td>
+              {{ config.getConfigurationValue("honeypot","serial") }}
+          </td>
+        </tr>
+        <tr>
+            <th>
+                Firmware
+            </th>
+            <td>
+                {{ config.getConfigurationValue("honeypot","firmware") }}
+            </td>
+          </tr>
+          <tr>
+              <th>
+                  Firmware Update
+              </th>
+              <td>
+                  <form action="update.php{{ getValues }}" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="firmware"></input>
+                    <button>update</button>
+                  </form>
+              </td>
+            </tr>
+    </table>
   {% include 'ugly/footer.html' %}
 </body>
 </html>

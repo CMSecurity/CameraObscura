@@ -56,6 +56,21 @@
       "X-Powered-By": "PHP/5.3.7"
     }
   },
+  "update.php":{
+    "actions": [
+      "authorize",
+      "catchfile",
+      "servefile"
+    ],
+    "servefile":{
+      "file": "/ugly/update.html",
+      "render_template": true
+    },
+    "headers": {
+      "Server": "Apache",
+      "X-Powered-By": "PHP/5.3.7"
+    }
+  },
   "jquery.min.js":{
     "actions": [
       "servefile",

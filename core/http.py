@@ -7,14 +7,20 @@ This module http related functionality
 
 from jsonpickle import decode
 from flask import Flask, request, abort, send_file, make_response, send_from_directory, render_template
+from werkzeug.utils import secure_filename
 from core import config, logging, auth
 from datetime import datetime
 from random import randint
 import pathlib
 from PIL import Image, ImageDraw, ImageEnhance
-from os import path
+from os import path, remove
+from shutil import move
+from urllib import parse
+import psutil
+import hashlib
 import re
 app = Flask(__name__, template_folder='../templates')
+app.config["UPLOAD_FOLDER"] = "./dl/"
 app.url_map.strict_slashes = False
 ROUTES=None
 ROOT=""
@@ -60,7 +66,9 @@ def handleRoute(path):
     LASTROUTE = route
     for action in route["actions"]:
       if action == "log":
-        log(request.method, request.remote_addr)
+        log(request.method, request.remote_addr,sessionId(request))
+      if action == "catchfile":
+        catchfile(route, request)
       if action == "servefile":
         return servefile(route, request)
       if action == "text":
@@ -72,8 +80,33 @@ def handleRoute(path):
     abort(404)
   return path
 
-def log(method: str, src_ip: str):
-  logging.log(logging.EVENT_ID_HTTP, datetime.now(), "HTTP-{0} Request".format(method), "http", False, src_ip,0.0, "")
+def log(method: str, src_ip: str, sessionId: str):
+  logging.log(logging.EVENT_ID_HTTP, datetime.now(), "HTTP-{0} Request".format(method), "http", False, src_ip,0.0, sessionId)
+
+def catchfile(route: object, request: request):
+  if request.method == 'POST':
+    for key in request.files:
+      file = request.files.get(key)
+      if file.filename != "":
+          workdir= config.getConfigurationValue("honeypot","workdir")
+          tmpFile = path.join(workdir, file.filename)  
+          file.save(tmpFile)
+          hash = getChecksum(tmpFile)
+          dlPath = path.join(app.config['UPLOAD_FOLDER'], hash)
+          if path.isfile(dlPath) == False:
+            result=move(tmpFile, dlPath)
+            logging.log(logging.EVENT_ID_UPLOAD, datetime.now(), "File {0} uploaded to dl/{1}. Removed tmp file: {2}".format(file.filename, hash, result), "http", False, request.remote_addr,0.0, sessionId(request))
+          else:
+            result=remove(tmpFile)
+            logging.log(logging.EVENT_ID_UPLOAD, datetime.now(), "Not storing duplicate content {1}. Removed tmp file: {2}".format(file.filename, hash, result), "http", False, request.remote_addr,0.0, sessionId(request))
+
+def getChecksum(filename: str) -> str:
+  blocksize=65536
+  sha256 = hashlib.sha256()
+  with open(filename, 'rb') as f:
+    for block in iter(lambda: f.read(blocksize), b''):
+        sha256.update(block)
+  return sha256.hexdigest()
 
 def servefile(route: object, request: request):
   file = route["servefile"]["file"]
@@ -98,14 +131,31 @@ def servefile(route: object, request: request):
     original.save(tmpPath)
     return send_file(tmpPath, as_attachment=False)
   if "render_template" in route["servefile"] and route["servefile"]["render_template"] == True:
-    return render_template(route["servefile"]["file"], config=config)
+    getValues = getString(request)
+    return render_template(route["servefile"]["file"], config=config, getValues=getValues)
   return send_file(fileToServe, as_attachment=False)
+
+def getString(request) -> str:
+  result=""
+  for key in request.args:
+    if result == "":
+      result = result + "?"
+    else:
+       result = result + "&"
+    result = result + parse.quote(key) + "=" + parse.quote(request.args.get(key))
+  return result
+
+def sessionId(request) -> str:
+  userAgent = str(request.headers.get('User-Agent'))
+  addr = request.remote_addr
+  raw = userAgent + addr
+  return hashlib.sha224(raw.encode('utf-8')).hexdigest()
 
 def authorize(route: object, request: request) -> bool:
 
   # extract credentials
   user, password = tryToFindPassword(request.args)
-  if request.method == "POST":
+  if request.method == "POST" and (user == "" or password == ""):
     user, password = tryToFindPassword(request.form)
 
   # Verify with user db
@@ -115,7 +165,7 @@ def authorize(route: object, request: request) -> bool:
     message = "Login attempt [{0}/{1}] succeeded".format(user, password)
   else: 
     message = "Login attempt [{0}/{1}] succeeded".format(user, password) 
-  logging.log(logging.EVENT_ID_LOGIN,datetime.now(),message,"http",False,request.remote_addr,0.0,"")
+  logging.log(logging.EVENT_ID_LOGIN,datetime.now(),message,"http",False,request.remote_addr,0.0,sessionId(request))
   return authResult
 
 def tryToFindPassword(haystack: dict) -> (str, str):
@@ -142,7 +192,7 @@ def serve(path: str):
   ROUTES=parseRoutes("routes.json")
   app.run(
         debug=True,
-        host="127.0.0.1",
+        host=config.getConfigurationValue("http","host"),
         port=int(config.getConfigurationValue("http","port"))
     )
  
