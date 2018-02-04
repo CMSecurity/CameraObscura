@@ -9,6 +9,9 @@ from enum import Enum
 from datetime import datetime
 from jsonpickle import encode
 from core import config
+from shutil import move
+import time
+import os 
 
 EVENT_ID_STARTED="obscura.sensor.started"
 EVENT_ID_HTTP="obscura.sensor.http"
@@ -65,8 +68,17 @@ def json(entry: LogEntry) -> bool:
   """
   content = encodeLogEntry(entry)
   result = True
+  path = config.getConfigurationValue("log","path")
+  modification = int(os.stat(path).st_mtime)
+  timespan = int(config.getConfigurationValue("log","timespan"))
+  now=int(time.time())
+  if modification + timespan < now:
+    files=([name for name in os.listdir('.') if os.path.isfile(name) and path in name])
+    suffix=len(files)
+    print("foo")
+    move(path, path + "." +  str(suffix))
   try: 
-    with open("obscura.json", 'a') as f:
+    with open(path, 'a') as f:
       f.write(content + "\n")
   except (Exception):
     result = False

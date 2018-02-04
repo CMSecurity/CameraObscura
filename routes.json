@@ -1,9 +1,13 @@
 {
   "index.php":{
     "actions": [
+      "sleep",
       "servefile",
       "log"
     ],
+    "sleep":{
+      "duration": 2
+    },
     "servefile":{
       "file": "/ugly/index.html",
       "render_template": true
@@ -15,9 +19,13 @@
   },
   "":{
     "actions": [
+      "sleep",
       "servefile",
       "log"
     ],
+    "sleep":{
+      "duration": 2
+    },
     "servefile":{
       "file": "/ugly/index.html",
       "render_template": true
@@ -29,9 +37,13 @@
   },
   "login.php":{
     "actions": [
+      "sleep",
       "servefile",
       "log"
     ],
+    "sleep":{
+      "duration": 1
+    },
     "servefile":{
       "file": "/ugly/login.html",
       "render_template": true
@@ -43,10 +55,14 @@
   },
   "admin.php":{
     "actions": [
+      "sleep",
       "authorize",
       "servefile",
       "log"
     ],
+    "sleep":{
+      "duration": 2
+    },
     "servefile":{
       "file": "/ugly/admin.html",
       "render_template": true
@@ -58,10 +74,14 @@
   },
   "update.php":{
     "actions": [
+      "sleep",
       "authorize",
       "catchfile",
       "servefile"
     ],
+    "sleep":{
+      "duration": 5
+    },
     "servefile":{
       "file": "/ugly/update.html",
       "render_template": true
@@ -85,9 +105,13 @@
   },
   "image": {
     "actions": [
+      "sleep",
       "servefile",
       "log"
     ],
+    "sleep":{
+      "duration": 1
+    },
     "servefile":{
       "file": [
         "images/0.jpg",

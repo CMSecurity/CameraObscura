@@ -10,16 +10,18 @@ from flask import Flask, request, abort, send_file, make_response, send_from_dir
 from werkzeug.utils import secure_filename
 from core import config, logging, auth
 from datetime import datetime
-from random import randint
+import random
 import pathlib
 from PIL import Image, ImageDraw, ImageEnhance
 from os import path, remove
 from shutil import move
 from urllib import parse
+import time
 import hashlib
 import re
 app = Flask(__name__, template_folder='../templates')
 app.config["UPLOAD_FOLDER"] = "./dl/"
+app.config["CACHE_TYPE"] = "null"
 app.url_map.strict_slashes = False
 ROUTES=None
 ROOT=""
@@ -44,6 +46,11 @@ def add_header(response):
     if "headers" in route:
       for key, value in route["headers"].items():
         response.headers[key] = value 
+
+    response.headers['Last-Modified'] = datetime.now()
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '-1'
   return response  
 
 
@@ -52,7 +59,7 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 @app.errorhandler(403)
-def page_not_found(e):
+def forbidden(e):
     return render_template('403.html'), 403 
 
 @app.route('/', defaults={'path': ''}, methods = ['POST', 'GET'])
@@ -64,6 +71,8 @@ def handleRoute(path):
     route = ROUTES[path]
     LASTROUTE = route
     for action in route["actions"]:
+      if action == "sleep":
+        time.sleep(float(route["sleep"]["duration"]))
       if action == "log":
         log(request.method, request.remote_addr,sessionId(request))
       if action == "catchfile":
@@ -93,11 +102,11 @@ def catchfile(route: object, request: request):
           hash = getChecksum(tmpFile)
           dlPath = path.join(app.config['UPLOAD_FOLDER'], hash)
           if path.isfile(dlPath) == False:
-            result=move(tmpFile, dlPath)
-            logging.log(logging.EVENT_ID_UPLOAD, datetime.now(), "File {0} uploaded to dl/{1}. Removed tmp file: {2}".format(file.filename, hash, result), "http", False, request.remote_addr,0.0, sessionId(request))
+            move(tmpFile, dlPath)
+            logging.log(logging.EVENT_ID_UPLOAD, datetime.now(), "File {0} uploaded to dl/{1}".format(file.filename, hash), "http", False, request.remote_addr,0.0, sessionId(request))
           else:
-            result=remove(tmpFile)
-            logging.log(logging.EVENT_ID_UPLOAD, datetime.now(), "Not storing duplicate content {1}. Removed tmp file: {2}".format(file.filename, hash, result), "http", False, request.remote_addr,0.0, sessionId(request))
+            remove(tmpFile)
+            logging.log(logging.EVENT_ID_UPLOAD, datetime.now(), "Not storing duplicate content {1}".format(file.filename, hash), "http", False, request.remote_addr,0.0, sessionId(request))
 
 def getChecksum(filename: str) -> str:
   blocksize=65536
@@ -111,7 +120,8 @@ def servefile(route: object, request: request):
   file = route["servefile"]["file"]
   
   if isinstance(file, list):
-    fileToServe = file[randint(0, len(file) -1)]
+    random.seed(datetime.now().time()) 
+    fileToServe = file[random.randint(0, len(file) -1)]
   else:
     fileToServe = file
   

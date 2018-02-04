@@ -104,5 +104,5 @@ ENV/
 .mypy_cache/
 
 
-obscura.json
+obscura.json*
 dl/*
