@@ -14,8 +14,7 @@ class HTTPTestCase(CameraTestCase.CameraTestCase):
     def test_parseRoutesRoutesCheck(self):
         from core import http
         got=http.parseRoutes("routes.json")  
-
-        self.assertNotEqual(got["test/"], None)
+        self.assertNotEqual(got["admin.php"], None)
 
     
 
