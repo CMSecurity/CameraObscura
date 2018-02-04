@@ -4,6 +4,8 @@ IP Cam Honeypot
 
 [![Build Status](https://travis-ci.org/RoastingMalware/CameraObscura.svg?branch=master)](https://travis-ci.org/RoastingMalware/CameraObscura)
 
+IP Cameras are often misused for wide range malware campaigns. The purpose of this project is to fake a IP Camera with the common features, such as camera stream, login or firmware upload to protocolize actions done by botnets.
+
 > This project is currently under development. Most of the features are not implemented yet.
 
 ## (planned) Features

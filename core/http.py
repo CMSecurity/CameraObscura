@@ -16,7 +16,6 @@ from PIL import Image, ImageDraw, ImageEnhance
 from os import path, remove
 from shutil import move
 from urllib import parse
-import psutil
 import hashlib
 import re
 app = Flask(__name__, template_folder='../templates')
