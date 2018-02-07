@@ -6,8 +6,10 @@ This module contains any logic to parse the config file
 """
 import configparser
 import os
+from os.path import dirname, abspath, isfile, join
 
 CONFIG = None
+ROOT=dirname(dirname(abspath(__file__)))
 
 def getConfiguration(cfgfile: str) -> object:
     """
@@ -29,7 +31,7 @@ def getConfigurationValue(section: str, key: str):
     """
     global CONFIG 
     if CONFIG is None: # config is empty        
-        CONFIG=getConfiguration("configuration.cfg")
+        CONFIG=getConfiguration(join(ROOT,"configuration.cfg"))
 
     if CONFIG is None: # config is still empty -> failure
         return None

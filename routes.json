@@ -13,7 +13,7 @@
       "render_template": true
     },
     "headers": {
-      "Server": "Apache",
+      "Server": "lighttpd",
       "X-Powered-By": "PHP/5.3.7"
     }
   },
@@ -31,7 +31,7 @@
       "render_template": true
     },
     "headers": {
-      "Server": "Apache",
+      "Server": "lighttpd",
       "X-Powered-By": "PHP/5.3.7"
     }
   },
@@ -49,7 +49,7 @@
       "render_template": true
     },
     "headers": {
-      "Server": "Apache",
+      "Server": "lighttpd",
       "X-Powered-By": "PHP/5.3.7"
     }
   },
@@ -68,7 +68,7 @@
       "render_template": true
     },
     "headers": {
-      "Server": "Apache",
+      "Server": "lighttpd",
       "X-Powered-By": "PHP/5.3.7"
     }
   },
@@ -87,7 +87,7 @@
       "render_template": true
     },
     "headers": {
-      "Server": "Apache",
+      "Server": "lighttpd",
       "X-Powered-By": "PHP/5.3.7"
     }
   },
@@ -100,10 +100,10 @@
       "file": "templates/ugly/jquery.min.js"
     },
     "headers": {
-      "Server": "Apache"
+      "Server": "lighttpd"
     }
   },
-  "image": {
+  "cgi-bin/image.pl": {
     "actions": [
       "sleep",
       "servefile",

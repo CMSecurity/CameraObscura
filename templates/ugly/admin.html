@@ -7,6 +7,14 @@
     <h2>Admin panel</h2>
     <table border="1" frame="void" rules="all" style="width: 50%; text-align:center; border: 1px solid black; margin-left: auto; margin-right: auto">
       <tr>
+          <th>
+              Hostname
+          </th>
+          <td>
+              {{ config.getConfigurationValue("honeypot","hostname") }}
+          </td>
+        </tr>
+      <tr>
         <th>
             Model
         </th>

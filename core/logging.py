@@ -11,7 +11,8 @@ from jsonpickle import encode
 from core import config
 from shutil import move
 import time
-import os 
+import os
+from os.path import dirname, abspath, isfile, join
 
 EVENT_ID_STARTED="obscura.sensor.started"
 EVENT_ID_HTTP="obscura.sensor.http"
@@ -49,6 +50,7 @@ def log(eventId: str, timestamp: datetime, message: str, system: str, isError: b
   # allow only whitelisted method calls
   if selectedLogMethod != None and selectedLogMethod in ["json", "stdout", "text"]:
     return globals()[selectedLogMethod](entry)
+  
   return False
 
 def stdout(entry: LogEntry) -> bool:  
@@ -60,6 +62,12 @@ def stdout(entry: LogEntry) -> bool:
   print(entry)
   return True
 
+def getLogPath(filename: str) -> str:
+  if isfile(filename):
+    return filename
+  else: 
+    return join(config.ROOT, filename)
+
 def json(entry: LogEntry) -> bool: 
   """
   Protocol entry
@@ -68,7 +76,7 @@ def json(entry: LogEntry) -> bool:
   """
   content = encodeLogEntry(entry)
   result = True
-  path = config.getConfigurationValue("log","path")
+  path = getLogPath(config.getConfigurationValue("log","path"))
   modification = int(os.stat(path).st_mtime)
   timespan = int(config.getConfigurationValue("log","timespan"))
   now=int(time.time())
@@ -92,7 +100,8 @@ def text(entry: LogEntry) -> bool:
   """
   result = True
   try: 
-    with open("obscura.json", 'a') as f:
+    path = getLogPath(config.getConfigurationValue("log","path"))
+    with open(path, 'a') as f:
       f.write(entry + "\n")
   except (Exception):
     result = False
