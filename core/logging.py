@@ -63,10 +63,22 @@ def stdout(entry: LogEntry) -> bool:
   return True
 
 def getLogPath(filename: str) -> str:
-  if isfile(filename):
-    return filename
-  else: 
-    return join(config.ROOT, filename)
+  return join(config.ROOT, filename)
+
+def getRotatedLogFilename() -> str:
+  path = config.getConfigurationValue("log","path")
+  completePath = getLogPath(path)
+  now=int(time.time())
+  if isfile(completePath):
+    modification = int(os.stat(completePath).st_mtime)
+  else:
+    modification = now -1 # to trigger creation
+  timespan = int(config.getConfigurationValue("log","timespan"))
+  if modification + timespan < now:
+    files=([name for name in os.listdir('.') if os.path.isfile(name) and path in name])
+    suffix=len(files)
+    move(completePath, completePath + "." +  str(suffix))
+  return completePath
 
 def json(entry: LogEntry) -> bool: 
   """
@@ -74,17 +86,9 @@ def json(entry: LogEntry) -> bool:
   @param entry: the log entry to protocol
   @return: operation success state
   """
-  content = encodeLogEntry(entry)
   result = True
-  path = getLogPath(config.getConfigurationValue("log","path"))
-  modification = int(os.stat(path).st_mtime)
-  timespan = int(config.getConfigurationValue("log","timespan"))
-  now=int(time.time())
-  if modification + timespan < now:
-    files=([name for name in os.listdir('.') if os.path.isfile(name) and path in name])
-    suffix=len(files)
-    print("foo")
-    move(path, path + "." +  str(suffix))
+  content = encodeLogEntry(entry)
+  path = getRotatedLogFilename()
   try: 
     with open(path, 'a') as f:
       f.write(content + "\n")
@@ -99,8 +103,8 @@ def text(entry: LogEntry) -> bool:
   @return: operation success state
   """
   result = True
+  path = getRotatedLogFilename()
   try: 
-    path = getLogPath(config.getConfigurationValue("log","path"))
     with open(path, 'a') as f:
       f.write(entry + "\n")
   except (Exception):

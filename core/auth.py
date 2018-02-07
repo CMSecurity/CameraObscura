@@ -6,6 +6,8 @@ This module contains auth related functionality
 """
 
 import re
+from core import config
+from os.path import join
 
 class Credentials():
   userName=""
@@ -20,7 +22,7 @@ def isAuthorized(userName: str, password: str) -> bool:
   content = ""
   if userName == "" or password == "":
     return False
-  a = open("userdb.txt","r")
+  a = open(join(config.ROOT,"userdb.txt"),"r")
   lineRegex=r"(?P<username>[^:]+):x:(?P<password>.+)"
   p = re.compile(lineRegex)
   successfull = True

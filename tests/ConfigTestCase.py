@@ -23,7 +23,7 @@ class ConfigTestCase(CameraTestCase.CameraTestCase):
     def test_getConfigurationValueCorrectValue(self):        
         from core import config
         got=config.getConfigurationValue("honeypot", "hostname")     
-        self.assertEqual(got, "srv04.foo.bar")
+        self.assertEqual(got, "cam04")
 
     def test_getConfigurationValueWrongValue(self):        
         from core import config

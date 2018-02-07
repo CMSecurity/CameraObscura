@@ -17,9 +17,6 @@ class LogTestCase(CameraTestCase.CameraTestCase):
         got=logging.log(logging.EVENT_ID_STARTED,datetime.datetime.now(),"foo","bar",True,"",0.0,"foo")    
         self.assertEqual(got, False)
 
-    def test_LogExisting(self):
-       from core import config
-       self.assertEqual(os.path.exists(os.path.join(config.ROOT,"obscura.json")), True)
 
 if __name__ == '__main__':
     unittest.main()

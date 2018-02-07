@@ -14,12 +14,13 @@ import random
 import pathlib
 from PIL import Image, ImageDraw, ImageEnhance
 from os import path, remove
+from os.path import join
 from shutil import move
 from urllib import parse
 import time
 import hashlib
 import re
-app = Flask(__name__, template_folder='../templates')
+app = Flask(__name__, template_folder=join(config.ROOT,'templates'))
 app.config["UPLOAD_FOLDER"] = "./dl/"
 app.config["CACHE_TYPE"] = "null"
 app.url_map.strict_slashes = False
@@ -121,12 +122,9 @@ def servefile(route: object, request: request):
   
   if isinstance(file, list):
     random.seed(datetime.now().time()) 
-    fileToServe = file[random.randint(0, len(file) -1)]
+    fileToServe = join(config.ROOT,file[random.randint(0, len(file) -1)])
   else:
-    fileToServe = file
-  
-  if path.exists(path.abspath(fileToServe)):
-    fileToServe=path.abspath(fileToServe)
+    fileToServe = join(config.ROOT,file)
   
   pathInfo = pathlib.Path(fileToServe)
   if "watermark" in route["servefile"] and route["servefile"]["watermark"] and pathInfo.suffix.replace(".","") in config.getConfigurationValue("image","images").replace(r"\s","").split(","):
@@ -198,7 +196,7 @@ def serve(path: str):
   global ROUTES
   global ROOT
   ROOT = path
-  ROUTES=parseRoutes("routes.json")
+  ROUTES=parseRoutes(join(config.ROOT,"routes.json"))
   app.run(
         debug=True,
         host=config.getConfigurationValue("http","host"),
