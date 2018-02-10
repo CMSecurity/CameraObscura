@@ -1,0 +1,10 @@
+FROM frolvlad/alpine-python3
+RUN apk update
+RUN apk add build-base python3-dev py3-pip jpeg-dev zlib-dev
+RUN apk add git
+WORKDIR /cameraobscura  
+RUN git clone https://github.com/roastingmalware/cameraobscura.git .
+RUN cp configuration.cfg.dist configuration.cfg
+RUN LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "python3 -m pip install -r requirements.txt"
+EXPOSE 8080
+CMD python3 main.py

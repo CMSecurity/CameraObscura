@@ -1,6 +1,6 @@
 FROM python:3.6.4-slim-stretch 
 RUN apt-get update
-RUN apt-get install -y git python3-pip
+RUN apt-get install -y git python3-pip wget 
 WORKDIR /cameraobscura  
 RUN git clone https://github.com/roastingmalware/cameraobscura.git .
 RUN cp configuration.cfg.dist configuration.cfg
