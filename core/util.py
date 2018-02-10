@@ -1,6 +1,8 @@
 # Copyright (c) 2018 RoastingMalware
 # See the LICENSE file for more information
 
+import hashlib
+
 """
 Misc. functionality used by several modules
 """
