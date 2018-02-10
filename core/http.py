@@ -8,7 +8,7 @@ This module http related functionality
 from jsonpickle import decode
 from flask import Flask, request, abort, send_file, make_response, send_from_directory, render_template
 from werkzeug.utils import secure_filename
-from core import config, logging, auth
+from core import config, logging, auth, util
 from datetime import datetime
 import random
 import pathlib
@@ -46,12 +46,7 @@ def add_header(response):
   if route != None:
     if "headers" in route:
       for key, value in route["headers"].items():
-        response.headers[key] = value 
-
-    response.headers['Last-Modified'] = datetime.now()
-    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '-1'
+        response.headers[key] = value
   return response  
 
 
@@ -100,7 +95,7 @@ def catchfile(route: object, request: request):
           workdir= config.getConfigurationValue("honeypot","workdir")
           tmpFile = path.join(workdir, file.filename)  
           file.save(tmpFile)
-          hash = getChecksum(tmpFile)
+          hash = util.getChecksum(tmpFile)
           dlPath = path.join(app.config['UPLOAD_FOLDER'], hash)
           if path.isfile(dlPath) == False:
             move(tmpFile, dlPath)
@@ -109,13 +104,7 @@ def catchfile(route: object, request: request):
             remove(tmpFile)
             logging.log(logging.EVENT_ID_UPLOAD, datetime.now(), "Not storing duplicate content {1}".format(file.filename, hash), "http", False, request.remote_addr,0.0, sessionId(request))
 
-def getChecksum(filename: str) -> str:
-  blocksize=65536
-  sha256 = hashlib.sha256()
-  with open(filename, 'rb') as f:
-    for block in iter(lambda: f.read(blocksize), b''):
-        sha256.update(block)
-  return sha256.hexdigest()
+
 
 def servefile(route: object, request: request):
   file = route["servefile"]["file"]
@@ -198,8 +187,7 @@ def serve(path: str):
   ROOT = path
   ROUTES=parseRoutes(join(config.ROOT,"routes.json"))
   app.run(
-        debug=True,
+        debug=config.getConfigurationValue("honeypot","debug").lower() == 'true',
         host=config.getConfigurationValue("http","host"),
         port=int(config.getConfigurationValue("http","port"))
     )
- 
