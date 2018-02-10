@@ -1,3 +1,10 @@
+# Copyright (c) 2018 RoastingMalware
+# See the LICENSE file for more information
+
+"""
+Catches uploaded files from HTTP POST requests
+"""
+
 from flask import request, Flask
 from core import config, util, logging
 from shutil import move

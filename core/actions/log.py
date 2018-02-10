@@ -1,3 +1,10 @@
+# Copyright (c) 2018 RoastingMalware
+# See the LICENSE file for more information
+
+"""
+Creates a log entry 
+"""
+
 from flask import Flask, request
 from core import logging
 

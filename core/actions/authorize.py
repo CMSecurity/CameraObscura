@@ -1,4 +1,9 @@
+# Copyright (c) 2018 RoastingMalware
+# See the LICENSE file for more information
 
+"""
+Does an authorization via HTTP GET or POST.
+"""
 from flask import Flask, request
 from core import logging, auth, config
 from datetime import datetime

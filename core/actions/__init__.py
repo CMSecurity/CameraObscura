@@ -1,3 +1,10 @@
+# Copyright (c) 2018 RoastingMalware
+# See the LICENSE file for more information
+
+"""
+Main management entry point for http actions
+"""
+
 __all__ = [
   'catchfile',
   'servefile',

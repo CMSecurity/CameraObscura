@@ -1,3 +1,10 @@
+# Copyright (c) 2018 RoastingMalware
+# See the LICENSE file for more information
+
+"""
+Serves a given file as HTTP response
+"""
+
 from datetime import datetime
 from os.path import join
 import pathlib

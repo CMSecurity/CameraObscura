@@ -1,4 +1,9 @@
+# Copyright (c) 2018 RoastingMalware
+# See the LICENSE file for more information
 
+"""
+Serves a text as HTTP response
+"""
 from flask import Flask, request
 def run(app: Flask, route: object, request: request, sessionId: str):
   return route["text"]["text"]
