@@ -8,6 +8,8 @@ IP Cameras are often misused for wide range malware campaigns. The purpose of th
 
 > This project is currently under development. Most of the features are not implemented yet.
 
+> For God's sake, don't deploy this to productive environments. It's an honeypot which also could be exploited.
+
 ## (planned) Features
 
 - [ ] Fake Camera Endpoint (for HTTP `POST`/ `GET` etc.)
@@ -40,26 +42,11 @@ IP Cameras are often misused for wide range malware campaigns. The purpose of th
 
 Python3
 
-### Usage
+## Dockerfiles
 
-#### Regular
-
-`python3 ./main.py`
-
-#### Docker
-
-```
-# we assume you are in the same directory as 'Dockerfile'
-# we have to dockerfiles: A debian based and an alpine based
-# to build the debian based:
-docker build -t roastingmalware/cameraobscura .  
-# to build the alpine based:
-docker build -t roastingmalware/camerabscura --file Dockerfile_min .
-# we recommend to run the container on a non-root-user, like 'camera'
-docker run -it -p 8080:8080 --net host --user camera roastingmalware/cameraobscura
-```
-
-> Note: The parameter `--net host` may only be needed on some configurations
+- `Dockerfile` regular, Debian based
+- `Dockerfile_min` minimal, Alpine based
+- `Dockerfile_arm` ARM compatible, Alpine based 
 
 ## License
 
