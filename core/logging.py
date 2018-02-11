@@ -18,6 +18,7 @@ EVENT_ID_STARTED="obscura.sensor.started"
 EVENT_ID_HTTP="obscura.sensor.http"
 EVENT_ID_LOGIN="obscura.http.login"
 EVENT_ID_UPLOAD="obscura.http.upload"
+EVENT_ID_ACTION_NOT_FOUND="obscura.http.actionnotfound"
 
 class LogEntry():
   eventId: ""
