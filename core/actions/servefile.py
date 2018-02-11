@@ -17,7 +17,7 @@ def run(app: Flask, route: object, request: request, sessionId: str):
   file = route["servefile"]["file"]
   
   if isinstance(file, list):
-    random.seed(datetime.now().time()) 
+    random.seed(datetime.now().time().microsecond)
     fileToServe = join(config.ROOT,file[random.randint(0, len(file) -1)])
   else:
     fileToServe = join(config.ROOT,file)
