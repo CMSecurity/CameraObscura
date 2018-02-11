@@ -8,6 +8,12 @@
   <a href="/login.php">login</a>
   <br>
   <img style="min-width: 41%;" src="cgi-bin/image.pl">
+  <script>
+    function refresh() {
+       location.reload(true);
+    }
+    setInterval(refresh,10000);
+  </script>
   {% include 'ugly/footer.html' %}
 </body>
 </html>
