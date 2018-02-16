@@ -7,7 +7,9 @@ from os import read
 from os.path import join
 import termcolor
 from sys import version
-
+import random
+import string
+import time
 
 """
 Misc. functionality used by several modules

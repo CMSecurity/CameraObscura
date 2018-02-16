@@ -1,10 +1,10 @@
 <html>
 <head>
- <title>IPCAM</title> 
+ <title>{{ config.getConfigurationValue("honeypot","name") }}</title> 
  <script src="jquery.min.js"></script>
 </head>
 <body style="background-color:grey; text-align:center">
-  <h2>IPCAM Viewer</h2>
+  <h2>{{ config.getConfigurationValue("honeypot","name") }}</h2>
   <a href="/login.php">login</a>
   <br>
   <img style="min-width: 41%;" src="cgi-bin/image.pl">

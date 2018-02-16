@@ -7,6 +7,7 @@ model=C2259
 workdir=/tmp/
 debug=false
 branding=false
+name=camera
 
 [log]
 # you can choose between stdout and json/ text. 
