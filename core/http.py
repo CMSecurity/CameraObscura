@@ -93,7 +93,7 @@ def serve(path: str):
   ROOT = path
   ROUTES=parseRoutes(join(config.ROOT,"routes.json"))
   app.run(
-        debug=config.getConfigurationValue("honeypot","debug").lower() == 'true',
+        debug=config.getConfigurationValue("honeypot","debug"),
         host=config.getConfigurationValue("http","host"),
         port=int(config.getConfigurationValue("http","port"))
     )

@@ -37,7 +37,10 @@ def getConfigurationValue(section: str, key: str):
         return None
 
     if section in CONFIG and key in CONFIG[section]:
-        return CONFIG[section][key]    
+        value = CONFIG[section][key] 
+        if value == 'true' or value == 'false':
+            return value == 'true'
+        return CONFIG[section][key] 
    
     return None
 

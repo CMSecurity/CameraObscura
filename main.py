@@ -5,5 +5,6 @@
 Program main entrance point
 """
 
-from core import http
+from core import http, util
+util.branding()
 http.serve(__file__)
