@@ -42,11 +42,11 @@ IP Cameras are often misused for wide range malware campaigns. The purpose of th
 
 Python3
 
-## Dockerfiles
+## Recommendations
 
-- `Dockerfile` regular, Debian based
-- `Dockerfile_min` minimal, Alpine based
-- `Dockerfile_arm` ARM compatible, Alpine based 
+- Don't run the honeypot as root
+- Don't run the honeypot on a productive environment
+- Use a dedicated, isolated environment (like `qemu`, `lxd`, `lxc` or `docker`)
 
 ## License
 
