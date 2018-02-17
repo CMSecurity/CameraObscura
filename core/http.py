@@ -62,7 +62,7 @@ def handleRoute(path):
   post = encode(request.form, unpicklable=False)
   target = path
   if target == "":
-    path = "/"
+    target = "/"
   
   logMessage = "{0} Request => Target {1}, GET {2}, POST {3}".format(request.method, target, get, post)
   logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), logMessage, "http", False, request.remote_addr,0.0, sessionId(request))
