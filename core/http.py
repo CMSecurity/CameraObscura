@@ -58,7 +58,10 @@ def forbidden(e):
 def handleRoute(path):
   global ROUTES
   global LASTROUTE
+  logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), "{0} Request, Target {1}".format(request.method, path), "http", False, request.remote_addr,0.0, sessionId(request))
+    
   if path in ROUTES:
+    logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), "{0} Request, Client {1}".format(request.method, request.headers.get('User-Agent')), "http", False, request.remote_addr,0.0, sessionId(request))
     route = ROUTES[path]
     LASTROUTE = route
     for action in route["actions"]:
@@ -68,8 +71,8 @@ def handleRoute(path):
       elif result != None and isinstance(result, bool) == False:
         return result
   else:
+    logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), "{0} Request, Client {1}, Result 404".format(request.method, request.headers.get('User-Agent')), "http", True, request.remote_addr,0.0, None)
     abort(404)
-  return path
 
 def getString(request) -> str:
   result=""

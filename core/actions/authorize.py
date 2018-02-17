@@ -23,8 +23,8 @@ def authorize(route: object, request: request, sessionId: str) -> bool:
   if authResult:
     message = "Login attempt [{0}/{1}] succeeded".format(user, password)
   else: 
-    message = "Login attempt [{0}/{1}] succeeded".format(user, password) 
-  logging.log(logging.EVENT_ID_LOGIN,datetime.now(),message,"http",False,request.remote_addr,0.0,sessionId)
+    message = "Login attempt [{0}/{1}] failed".format(user, password) 
+  logging.log(logging.EVENT_ID_LOGIN,datetime.now(),message,"http",authResult,request.remote_addr,0.0,sessionId)
   return authResult
 
 def tryToFindPassword(haystack: dict) -> (str, str):
