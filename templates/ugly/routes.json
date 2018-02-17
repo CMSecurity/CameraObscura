@@ -2,8 +2,8 @@
   "index.php":{
     "actions": [
       "sleep",
-      "servefile",
-      "log"
+      "log",
+      "servefile"
     ],
     "sleep":{
       "duration": 2
@@ -38,8 +38,8 @@
   "login.php":{
     "actions": [
       "sleep",
-      "servefile",
-      "log"
+      "log",
+      "servefile"
     ],
     "sleep":{
       "duration": 1
@@ -57,8 +57,8 @@
     "actions": [
       "sleep",
       "authorize",
-      "servefile",
-      "log"
+      "log",
+      "servefile"
     ],
     "sleep":{
       "duration": 2
@@ -106,8 +106,8 @@
   "cgi-bin/image.pl": {
     "actions": [
       "sleep",
-      "servefile",
-      "log"
+      "log",
+      "servefile"
     ],
     "sleep":{
       "duration": 1
