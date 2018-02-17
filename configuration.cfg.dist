@@ -6,7 +6,7 @@ serial=HX21BZ
 model=C2259
 workdir=/tmp/
 debug=false
-branding=false
+branding=true
 name=camera
 
 [log]
@@ -21,6 +21,7 @@ usernameregex=user
 passwordregex=pass
 port=8080
 host=127.0.0.1
+template=ugly
 
 [image]
 watermark=Entrance west

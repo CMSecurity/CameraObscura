@@ -12,7 +12,7 @@ from core import config, logging, auth, util, actions
 from core.actions import * 
 from datetime import datetime
 from urllib import parse
-from os.path import join
+from os.path import join, isfile
 import hashlib
 import re
 app = Flask(__name__, template_folder=join(config.ROOT,'templates'))
@@ -91,7 +91,13 @@ def serve(path: str):
   global ROUTES
   global ROOT
   ROOT = path
-  ROUTES=parseRoutes(join(config.ROOT,"routes.json"))
+  template = config.getConfigurationValue("http","template")
+  if template == None:
+    raise Exception("No template is configured")
+  routesFiles = join(config.ROOT,"templates", template, "routes.json")
+  if isfile(routesFiles) == False:
+    raise FileNotFoundError("Routes configuration was not found")
+  ROUTES=parseRoutes(routesFiles)
   app.run(
         debug=config.getConfigurationValue("honeypot","debug"),
         host=config.getConfigurationValue("http","host"),
