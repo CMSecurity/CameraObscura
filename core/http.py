@@ -5,7 +5,7 @@
 This module http related functionality
 """ 
 
-from jsonpickle import decode
+from jsonpickle import decode, encode
 from flask import Flask, request, abort, send_file, make_response, send_from_directory, render_template
 from werkzeug.utils import secure_filename
 from core import config, logging, auth, util, actions
@@ -58,8 +58,15 @@ def forbidden(e):
 def handleRoute(path):
   global ROUTES
   global LASTROUTE
-  logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), "{0} Request, Target {1}".format(request.method, path), "http", False, request.remote_addr,0.0, sessionId(request))
-    
+  get = encode(request.args, unpicklable=False)
+  post = encode(request.form, unpicklable=False)
+  target = path
+  if target == "":
+    path = "/"
+  
+  logMessage = "{0} Request => Target {1}, GET {2}, POST {3}".format(request.method, target, get, post)
+  logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), logMessage, "http", False, request.remote_addr,0.0, sessionId(request))
+  
   if path in ROUTES:
     logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), "{0} Request, Client {1}".format(request.method, request.headers.get('User-Agent')), "http", False, request.remote_addr,0.0, sessionId(request))
     route = ROUTES[path]
@@ -74,7 +81,7 @@ def handleRoute(path):
     logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), "{0} Request, Client {1}, Result 404".format(request.method, request.headers.get('User-Agent')), "http", True, request.remote_addr,0.0, None)
     abort(404)
 
-def getString(request) -> str:
+def getString(request: request) -> str:
   result=""
   for key in request.args:
     if result == "":
