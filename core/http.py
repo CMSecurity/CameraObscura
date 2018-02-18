@@ -67,12 +67,24 @@ def handleRoute(path):
   logMessage = "{0} Request => Target {1}, GET {2}, POST {3}".format(request.method, target, get, post)
   logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), logMessage, "http", False, request.remote_addr,0.0, sessionId(request))
   
-  if path in ROUTES:
+  selectedRoute = None
+  selectedPath = None
+  for value in ROUTES:
+    needle = path + getString(request)
+    if len(path) > 0 and path[0] != "." and value != "" and re.match(value, needle):
+      selectedRoute = ROUTES[value]
+      selectedPath = value
+  
+  if selectedRoute == None and path == "":
+    selectedRoute = ROUTES[""]
+    selectedPath = ""
+
+  if selectedRoute != None:
     logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), "{0} Request, Client {1}".format(request.method, request.headers.get('User-Agent')), "http", False, request.remote_addr,0.0, sessionId(request))
-    route = ROUTES[path]
+    route = selectedRoute
     LASTROUTE = route
     for action in route["actions"]:
-      result=actions.run(action,app, route, request, sessionId(request))
+      result=actions.run(action,app, selectedPath, route, request, sessionId(request))
       if isinstance(result, bool) and result == False:
         abort(403)
       elif result != None and isinstance(result, bool) == False:
@@ -83,14 +95,12 @@ def handleRoute(path):
 
 def getString(request: request) -> str:
   result=""
-  for key in request.args:
-    if result == "":
-      result = result + "?"
-    else:
-       result = result + "&"
-    result = result + parse.quote(key) + "=" + parse.quote(request.args.get(key))
-  return result
-
+  get = request.query_string.decode("utf-8")
+  if get == "":
+    return result
+  else:
+    return "?" +  get
+ 
 def sessionId(request) -> str:
   userAgent = str(request.headers.get('User-Agent'))
   addr = request.remote_addr

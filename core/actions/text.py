@@ -5,5 +5,5 @@
 Serves a text as HTTP response
 """
 from flask import Flask, request
-def run(app: Flask, route: object, request: request, sessionId: str):
+def run(app: Flask, selectedPath: str, route: object, request: request, sessionId: str):
   return route["text"]["text"]

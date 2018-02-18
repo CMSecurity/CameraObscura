@@ -12,7 +12,7 @@ from os import path, remove
 from os.path import join
 from datetime import datetime
 
-def run(app: Flask, route: object, request: request, sessionId: str):
+def run(app: Flask, selectedPath: str,  route: object, request: request, sessionId: str):
   if request.method == 'POST':
     for key in request.files:
       file = request.files.get(key)

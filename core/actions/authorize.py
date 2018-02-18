@@ -8,7 +8,7 @@ from flask import Flask, request
 from core import logging, auth, config
 from datetime import datetime
 import re
-def run(app: Flask, route: object, request: request, sessionId: str):
+def run(app: Flask,  selectedPath: str,  route: object, request: request, sessionId: str):
   return authorize(route, request, sessionId)
 
 def authorize(route: object, request: request, sessionId: str) -> bool:
