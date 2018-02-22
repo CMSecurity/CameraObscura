@@ -12,7 +12,7 @@ from core import config
 from shutil import move
 import time
 import os
-from os.path import dirname, abspath, isfile, join
+from os.path import dirname, abspath, isfile, join, isabs
 
 EVENT_ID_STARTED="obscura.sensor.started"
 EVENT_ID_HTTP="obscura.sensor.http"
@@ -65,6 +65,8 @@ def stdout(entry: LogEntry) -> bool:
   return True
 
 def getLogPath(filename: str) -> str:
+  if isabs(filename):
+    return filename
   return join(config.ROOT, filename)
 
 def getRotatedLogFilename() -> str:
