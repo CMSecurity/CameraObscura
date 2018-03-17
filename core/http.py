@@ -74,10 +74,13 @@ def handleRoute(path):
     if len(path) > 0 and path[0] != "." and value != "" and re.match(value, needle):
       selectedRoute = ROUTES[value]
       selectedPath = value
+      break
   
   if selectedRoute == None and path == "":
     selectedRoute = ROUTES[""]
     selectedPath = ""
+
+  
 
   if selectedRoute != None:
     logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), "{0} Request, Client {1}".format(request.method, request.headers.get('User-Agent')), "http", False, request.remote_addr,0.0, sessionId(request))
