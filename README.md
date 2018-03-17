@@ -15,7 +15,7 @@ IP Cameras are often misused for wide range malware campaigns. The purpose of th
 - [ ] Fake Camera Endpoint (for HTTP `POST`/ `GET` etc.)
   - [ ] Fake camera stream
   - [x] JSON configurable Routes to simulate logins or upload of new firmware according to the specifications of the manufacturers
-  - [ ] Configurable headers to simulate a vulnerable webserver
+  - [x] Configurable headers to simulate a vulnerable webserver
 - [ ] Web Interface
   - [x] Semi-Fake Web UI
   - [ ] Clone existing to simulate running vulnerable IP-Cams
@@ -23,7 +23,7 @@ IP Cameras are often misused for wide range malware campaigns. The purpose of th
   - [x] JSON
   - [x] Log (text)
   - [ ] SQL
-  - [ ] Payload dump (e. g. on fake firmware upload or `POST` with `file`)
+  - [x] Payload dump (e. g. on fake firmware upload or `POST` with `file`)
 - [ ] Fake other services (like RTSP)
   - [ ] RTSP 
   - [ ] SSH/ Telnet (using cowrie)

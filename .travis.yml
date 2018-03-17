@@ -7,6 +7,7 @@ python:
 # command to install dependencies
 install:
   - pip install -r requirements.txt
+  - pip install pylint
 # command to run tests
 script:
   - python ./main.py init
@@ -14,3 +15,5 @@ script:
   - python ./tests/LogTestCase.py
   - python ./tests/HTTPTestCase.py
   - python ./tests/AuthTestCase.py
+  - python -m pylint ./core/*.py
+  - python -m pylint ./core/actions/*.py

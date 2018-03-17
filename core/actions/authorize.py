@@ -8,38 +8,51 @@ from flask import Flask, request
 from core import logging, auth, config
 from datetime import datetime
 import re
-def run(app: Flask,  selectedPath: str,  route: object, request: request, sessionId: str):
-  return authorize(route, request, sessionId)
+
+
+def run(app: Flask, selectedPath: str, route: object,
+        request: request, sessionId: str):
+    return authorize(route, request, sessionId)
+
 
 def authorize(route: object, request: request, sessionId: str) -> bool:
-  # extract credentials
-  user, password = tryToFindPassword(request.args)
-  if request.method == "POST" and (user == "" or password == ""):
-    user, password = tryToFindPassword(request.form)
+    # extract credentials
+    user, password = tryToFindPassword(request.args)
+    if request.method == "POST" and (user == "" or password == ""):
+        user, password = tryToFindPassword(request.form)
 
-  # Verify with user db
-  authResult=auth.isAuthorized(user, password)
-  message = ""
-  if authResult:
-    message = "Login attempt [{0}/{1}] succeeded".format(user, password)
-  else: 
-    message = "Login attempt [{0}/{1}] failed".format(user, password) 
-  logging.log(logging.EVENT_ID_LOGIN,datetime.now(),message,"http",authResult,request.remote_addr,0.0,sessionId)
-  return authResult
+    # Verify with user db
+    authResult = auth.isAuthorized(user, password)
+    message = ""
+    if authResult:
+        message = "Login attempt [{0}/{1}] succeeded".format(user, password)
+    else:
+        message = "Login attempt [{0}/{1}] failed".format(user, password)
+    logging.log(
+        logging.EVENT_ID_LOGIN,
+        datetime.now(),
+        message,
+        "http",
+        authResult,
+        request.remote_addr,
+        0.0,
+        sessionId)
+    return authResult
+
 
 def tryToFindPassword(haystack: dict) -> (str, str):
-  userNameRegex=config.getConfigurationValue("http","usernameregex")
-  passwordRegex=config.getConfigurationValue("http","passwordregex")
-  userName=""
-  password=""
-  for key in haystack:
-    value = haystack.get(key)
-    if userName == "" and re.match(userNameRegex, key) != None:
-      userName = value
-    if password == "" and re.match(passwordRegex, key) != None:
-      password = value  
+    userNameRegex = config.getConfigurationValue("http", "usernameregex")
+    passwordRegex = config.getConfigurationValue("http", "passwordregex")
+    userName = ""
+    password = ""
+    for key in haystack:
+        value = haystack.get(key)
+        if userName == "" and re.match(userNameRegex, key) is not None:
+            userName = value
+        if password == "" and re.match(passwordRegex, key) is not None:
+            password = value
 
-    if password != "" and userName != "":
-      break
-  
-  return (userName, password)
+        if password != "" and userName != "":
+            break
+
+    return (userName, password)
