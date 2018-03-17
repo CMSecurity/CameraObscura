@@ -29,10 +29,5 @@ class AuthTestCase(CameraTestCase.CameraTestCase):
 
         self.assertEqual(got, False)
     
-    def test_isAuthorizedRegexr(self):
-        from core import auth
-        got=auth.isAuthorized(".+",".+")
-
-        self.assertEqual(got, False)
 if __name__ == '__main__':
     unittest.main()
