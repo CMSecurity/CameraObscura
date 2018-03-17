@@ -15,5 +15,5 @@ script:
   - python ./tests/LogTestCase.py
   - python ./tests/HTTPTestCase.py
   - python ./tests/AuthTestCase.py
-  - python -m pylint ./core/*.py
-  - python -m pylint ./core/actions/*.py
+  - python -m pylint ./core/*.py  || exit 0
+  - python -m pylint ./core/actions/*.py  || exit 0
