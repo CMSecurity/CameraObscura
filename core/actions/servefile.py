@@ -5,14 +5,14 @@
 Serves a given file as HTTP response
 """
 
+import random
+import re
 from datetime import datetime
 from os.path import join
 import pathlib
 from flask import Flask, request, send_file, render_template
 from PIL import Image, ImageDraw, ImageEnhance
 from core import config, logging, http
-import random
-import re
 
 
 def run(app: Flask, selectedPath: str, route: object,

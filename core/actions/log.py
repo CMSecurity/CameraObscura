@@ -5,20 +5,23 @@
 Creates a log entry
 """
 
+import datetime
 from flask import Flask, request
 from core import logging
-import datetime
 
 
-def run(app: Flask, selectedPath: str, route: object,
-        request: request, sessionId: str):
+def run(app, selectedPath: str, route: object,
+        requestObj, sessionId: str):
+    """
+    Executes the logging action
+    """
     logging.log(
         logging.EVENT_ID_HTTP,
         datetime.datetime.now(),
         "{0} Request".format(
-            request.method),
+            requestObj.method),
         "http",
         False,
-        request.remote_addr,
+        requestObj.remote_addr,
         0.0,
         sessionId)

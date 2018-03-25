@@ -4,22 +4,26 @@
 """
 Does an authorization via HTTP GET or POST.
 """
-from flask import Flask, request
-from core import logging, auth, config
 from datetime import datetime
 import re
+from core import logging, auth, config
+
+def run(app, selectedPath: str, route: object,
+        requestObj, sessionId: str):
+    """
+    Executes the authorize action
+    """
+    return authorize(route, requestObj, sessionId)
 
 
-def run(app: Flask, selectedPath: str, route: object,
-        request: request, sessionId: str):
-    return authorize(route, request, sessionId)
-
-
-def authorize(route: object, request: request, sessionId: str) -> bool:
+def authorize(route: object, requestObj, sessionId: str) -> bool:
+    """
+    Tries to authorize a user based on a requestObj
+    """
     # extract credentials
-    user, password = tryToFindPassword(request.args)
-    if request.method == "POST" and (user == "" or password == ""):
-        user, password = tryToFindPassword(request.form)
+    user, password = tryToFindPassword(requestObj.args)
+    if requestObj.method == "POST" and (user == "" or password == ""):
+        user, password = tryToFindPassword(requestObj.form)
 
     # Verify with user db
     authResult = auth.isAuthorized(user, password)
@@ -34,13 +38,16 @@ def authorize(route: object, request: request, sessionId: str) -> bool:
         message,
         "http",
         authResult,
-        request.remote_addr,
+        requestObj.remote_addr,
         0.0,
         sessionId)
     return authResult
 
 
 def tryToFindPassword(haystack: dict) -> (str, str):
+    """
+    Tries to harvest credentials, e. g. out of HTTP GET
+    """
     userNameRegex = config.getConfigurationValue("http", "usernameregex")
     passwordRegex = config.getConfigurationValue("http", "passwordregex")
     userName = ""
