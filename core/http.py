@@ -5,16 +5,15 @@
 This module http related functionality
 """
 
-from jsonpickle import decode, encode
-from flask import Flask, request, abort, send_file, make_response, send_from_directory, render_template
-from werkzeug.utils import secure_filename
-from core import config, logging, auth, util, actions
-from core.actions import *
+
 from datetime import datetime
-from urllib import parse
 from os.path import join, isfile
-import hashlib
 import re
+import hashlib
+from jsonpickle import decode, encode
+from flask import Flask, request, abort, render_template
+from core import config, logging, util, actions
+from core.actions import *
 app = Flask(__name__, template_folder=join(config.ROOT, 'templates'))
 app.config["UPLOAD_FOLDER"] = "./dl/"
 app.config["CACHE_TYPE"] = "null"
@@ -25,12 +24,15 @@ LASTROUTE = None
 
 
 def parseRoutes(file: str) -> object:
+    """
+    parses the JSON routes file.
+    """
     content = ""
     try:
         with open(file, 'r') as f:
             content = f.read()
-    except (Exception):
-        pass
+    except FileNotFoundError as e:
+        print(e)
 
     obj = decode(content)
     return obj
@@ -38,6 +40,9 @@ def parseRoutes(file: str) -> object:
 
 @app.after_request
 def add_header(response):
+    """
+    Adds a header if the configured routes has some
+    """
     route = LASTROUTE
     if route is not None:
         if "headers" in route:
@@ -48,17 +53,26 @@ def add_header(response):
 
 @app.errorhandler(404)
 def page_not_found(e):
+    """
+    Render the 404 error
+    """
     return render_template('404.html'), 404
 
 
 @app.errorhandler(403)
 def forbidden(e):
+    """
+    Render the 403 error
+    """
     return render_template('403.html'), 403
 
 
 @app.route('/', defaults={'path': ''}, methods=['POST', 'GET'])
 @app.route('/<path:path>', methods=['POST', 'GET'])
 def handleRoute(path):
+    """
+    Tries to execute a given route based on the path
+    """
     global ROUTES
     global LASTROUTE
     get = encode(request.args, unpicklable=False)
@@ -76,7 +90,7 @@ def handleRoute(path):
     selectedPath = None
     for value in ROUTES:
         needle = path + getString(request)
-        if len(path) > 0 and path[0] != "." and value != "" and re.match(
+        if path and path[0] != "." and value != "" and re.match(
                 value, needle):
             selectedRoute = ROUTES[value]
             selectedPath = value
@@ -94,9 +108,9 @@ def handleRoute(path):
         for action in route["actions"]:
             result = actions.run(action, app, selectedPath,
                                  route, request, sessionId(request))
-            if isinstance(result, bool) and result == False:
+            if isinstance(result, bool) and result is False:
                 abort(403)
-            elif result is not None and isinstance(result, bool) == False:
+            elif result is not None and isinstance(result, bool) is False:
                 return result
     else:
         logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), "{0} Request, Client {1}, Result 404".format(
@@ -104,31 +118,41 @@ def handleRoute(path):
         abort(404)
 
 
-def getString(request: request) -> str:
+def getString(requestObj) -> str:
+    """
+    Returns the HTTP GET string out of the given request
+    """
     result = ""
-    get = request.query_string.decode("utf-8")
+    get = requestObj.query_string.decode("utf-8")
     if get == "":
         return result
-    else:
-        return "?" + get
+    return "?" + get
 
 
-def sessionId(request) -> str:
-    userAgent = str(request.headers.get('User-Agent'))
-    addr = request.remote_addr
+def sessionId(requestObj) -> str:
+    """
+    Generates a pseudo session id based on the given request
+    """
+    userAgent = str(requestObj.headers.get('User-Agent'))
+    addr = requestObj.remote_addr
     raw = userAgent + addr
     return hashlib.sha224(raw.encode('utf-8')).hexdigest()
 
 
 def serve(path: str):
+    """
+    Start the server
+    @param path is the base path of the software
+    """
     global ROUTES
     global ROOT
     ROOT = path
+    util.branding()
     template = config.getConfigurationValue("http", "template")
     if template is None:
         raise Exception("No template is configured")
     routesFiles = join(config.ROOT, "templates", template, "routes.json")
-    if isfile(routesFiles) == False:
+    if isfile(routesFiles) is False:
         raise FileNotFoundError("Routes configuration was not found")
     ROUTES = parseRoutes(routesFiles)
     app.run(

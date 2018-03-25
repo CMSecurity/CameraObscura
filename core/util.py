@@ -1,22 +1,20 @@
 # Copyright (c) 2018 RoastingMalware
 # See the LICENSE file for more information
 
-import hashlib
-from core import config
-from os import read
-from os.path import join
-import termcolor
-from sys import version
-import random
-import string
-import time
-
 """
 Misc. functionality used by several modules
 """
 
+from os.path import join
+from sys import version
+import hashlib
+import termcolor
+from core import config
 
 def getChecksum(filename: str) -> str:
+    """
+    Returns the checksum for a given file
+    """
     blocksize = 65536
     sha256 = hashlib.sha256()
     with open(filename, 'rb') as f:
@@ -25,14 +23,17 @@ def getChecksum(filename: str) -> str:
     return sha256.hexdigest()
 
 
-def branding() -> str:
+def branding():
+    """
+    Prints the logo/ information about the software at startup
+    """
     if config.getConfigurationValue("honeypot", "branding"):
-        print("Camera Obscura [{0}, Python {1}]- https://github.com/roastingmalware/cameraobscura".format(
+        print("Camera Obscura [{0}, Python {1}]".format(
             termcolor.colored(getVersion(), 'yellow'), version))
         print("Hans, get ze {0}".format(
             termcolor.colored("Flammenwerfer", 'red', 'on_white')))
     debugModeEnabled = config.getConfigurationValue("honeypot", "debug")
-    if debugModeEnabled == True:
+    if debugModeEnabled is True:
         print(
             termcolor.colored(
                 "For god's sake, disable the debug mode!",
@@ -40,9 +41,12 @@ def branding() -> str:
 
 
 def getVersion() -> str:
+    """
+    Get the version of the software
+    """
     versionPath = join(config.ROOT, ".git/refs/heads/master")
-    version = None
+    versionString = None
     with open(versionPath, 'r') as file:
-        version = file.read()
+        versionString = file.read()
 
-    return version.strip()
+    return versionString.strip()

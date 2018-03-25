@@ -5,7 +5,7 @@
 Catches uploaded files from HTTP POST requests
 """
 
-from flask import request, Flask
+from flask import request,  Flask
 from core import config, util, logging
 from shutil import move
 from os import path, remove

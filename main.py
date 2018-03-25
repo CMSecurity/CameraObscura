@@ -5,17 +5,17 @@
 Program main entrance point
 """
 
-from core import http, util, config, init
-import termcolor
 import sys
 from os.path import isfile, join
-util.branding()
-if len(sys.argv) == 2 and sys.argv[1] == "init":
-  init.init()
-  sys.exit(0)
+import termcolor
+from core import http, config, init
 
-if isfile(join(config.ROOT, "configuration.cfg")) == False:
-  print(termcolor.colored("We recommend to initalize the honeypot to generate different serial numbers, versions and model numbers.", "yellow"))
-  print("You can do this with python3 main.py init")
+if len(sys.argv) == 2 and sys.argv[1] == "init":
+    init.init()
+    sys.exit(0)
+
+if isfile(join(config.ROOT, "configuration.cfg")) is False:
+    print(termcolor.colored("We recommend to initalize the honeypot", "yellow"))
+    print("You can do this with python3 main.py init")
 else:
-  http.serve(__file__)
+    http.serve(__file__)

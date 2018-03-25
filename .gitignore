@@ -107,3 +107,6 @@ ENV/
 obscura.json*
 dl/*
 configuration.cfg
+
+.vscode/
+images/

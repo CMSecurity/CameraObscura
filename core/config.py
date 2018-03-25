@@ -5,8 +5,7 @@
 This module contains any logic to parse the config file
 """
 import configparser
-import os
-from os.path import dirname, abspath, isfile, join
+from os.path import dirname, abspath, join
 
 CONFIG = None
 ROOT = dirname(dirname(abspath(__file__)))
@@ -19,7 +18,7 @@ def getConfiguration(cfgfile: str) -> object:
     @return: ConfigParser object
     """
     parser = configparser.ConfigParser()
-    if len(parser.read(cfgfile)) == 0:  # reading was not successfully
+    if parser.read(cfgfile) is False:  # reading was not successfully
         return None
     return parser
 

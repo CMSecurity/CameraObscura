@@ -1,19 +1,22 @@
+# Copyright (c) 2018 RoastingMalware
+# See the LICENSE file for more information
 
-import termcolor
+"""
+Functionality for initializing the honeypot
+"""
+
 import random
 import string
 import time
-from core import config
-from os import read
 from os.path import join, isfile
+import termcolor
+from core import config
 
 
 def init():
-    '''
-    firmware=1.5-retail-us
-    serial=HX21BZ
-    model=C2259
-    '''
+    """
+    Initializes the honeypot with random informations
+    """
     mode = random.randint(1, 2)
     oldSerial = "HX21BZ"
     oldModel = "C2259"
@@ -97,5 +100,8 @@ def init():
 
 
 def randomString(amount: int) -> str:
+    """
+    Get a random string with a given lenght
+    """
     return ''.join(random.choices(
         string.ascii_uppercase + string.digits, k=amount))
