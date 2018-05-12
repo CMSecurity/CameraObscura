@@ -119,7 +119,7 @@ def json(entry: LogEntry) -> bool:
     path = getRotatedLogFilename()
     try:
         with open(path, 'a') as f:
-            f.write(content + "\n")
+            f.write(content + "\r\n") # obscura is used mostly using splunk, but splunk needs \r\n
     except FileNotFoundError as e:
         print(e)
         result = False
