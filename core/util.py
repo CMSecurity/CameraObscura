@@ -9,7 +9,7 @@ from os.path import join
 from sys import version
 import hashlib
 import termcolor
-from core import config
+from core import config, constants
 
 def getChecksum(filename: str) -> str:
     """
@@ -29,7 +29,7 @@ def branding():
     """
     if config.getConfigurationValue("honeypot", "branding"):
         print("Camera Obscura [{0}, Python {1}]".format(
-            termcolor.colored(getVersion(), 'yellow'), version))
+            termcolor.colored(constants.VERSION, 'yellow'), version))
         print("Hans, get ze {0}".format(
             termcolor.colored("Flammenwerfer", 'red', 'on_white')))
     debugModeEnabled = config.getConfigurationValue("honeypot", "debug")
@@ -38,10 +38,3 @@ def branding():
             termcolor.colored(
                 "For god's sake, disable the debug mode!",
                 'red'))
-
-
-def getVersion() -> str:
-    """
-    Get the version of the software
-    """
-    return "0.9"

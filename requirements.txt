@@ -1,6 +1,6 @@
 
-jsonpickle==0.9.5
-configparser==3.5.0
-Flask==0.12.2
-Pillow==5.0.0
-termcolor==1.1.0
+jsonpickle>=0.9.5
+configparser>=3.5.0
+flask>=0.12.3
+Pillow>=5.0.0
+termcolor>=1.1.0
