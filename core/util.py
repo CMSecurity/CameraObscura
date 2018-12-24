@@ -44,9 +44,4 @@ def getVersion() -> str:
     """
     Get the version of the software
     """
-    versionPath = join(config.ROOT, ".git/refs/heads/master")
-    versionString = None
-    with open(versionPath, 'r') as file:
-        versionString = file.read()
-
-    return versionString.strip()
+    return "0.9"
