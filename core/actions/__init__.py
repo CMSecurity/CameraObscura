@@ -12,9 +12,7 @@ __all__ = [
     'catchfile',
     'servefile',
     'text',
-    'authorize',
-    'sleep',
-    'log'
+    'sleep'
 ]
 
 
@@ -22,19 +20,16 @@ def isAllowed(action: str):
     return action in __all__
 
 
-def run(action, app, path, route, request, sessionId):
+def run(action, app, path, route, request):
     if isAllowed(action) == False:
         logging.log(
             logging.EVENT_ID_ACTION_NOT_FOUND,
             datetime.now(),
             "Action not found {0}".format(action),
-            "http",
             True,
-            request.remote_addr,
-            0.0,
-            sessionId)
+            request.remote_addr,)
         return None
     modules = globals()
     if action in modules:
-        return modules[action].run(app, path, route, request, sessionId)
+        return modules[action].run(app, path, route, request)
     return None
