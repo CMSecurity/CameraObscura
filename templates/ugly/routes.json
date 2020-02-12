@@ -2,7 +2,6 @@
   "index.php":{
     "actions": [
       "sleep",
-      "log",
       "servefile"
     ],
     "sleep":{
@@ -20,8 +19,7 @@
   "":{
     "actions": [
       "sleep",
-      "servefile",
-      "log"
+      "servefile"
     ],
     "sleep":{
       "duration": 2
@@ -38,7 +36,6 @@
   "login.php":{
     "actions": [
       "sleep",
-      "log",
       "servefile"
     ],
     "sleep":{
@@ -56,8 +53,6 @@
   "admin.php":{
     "actions": [
       "sleep",
-      "authorize",
-      "log",
       "servefile"
     ],
     "sleep":{
@@ -75,7 +70,6 @@
   "update.php":{
     "actions": [
       "sleep",
-      "authorize",
       "catchfile",
       "servefile"
     ],
@@ -93,8 +87,7 @@
   },
   "jquery.min.js":{
     "actions": [
-      "servefile",
-      "log"
+      "servefile"
     ],
     "servefile":{
       "file": "templates/ugly/jquery.min.js"
@@ -106,7 +99,6 @@
   "cgi-bin/image.pl": {
     "actions": [
       "sleep",
-      "log",
       "servefile"
     ],
     "sleep":{
@@ -114,8 +106,8 @@
     },
     "servefile":{
       "file": [
-        "images/0.jpg",
-        "images/1.jpeg"
+        "templates/ugly/images/0.jpg",
+        "templates/ugly/images/1.jpg"
       ],
       "watermark": true
     },
