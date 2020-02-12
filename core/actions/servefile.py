@@ -16,7 +16,7 @@ from core import config, logging, http
 
 
 def run(app: Flask, selectedPath: str, route: object,
-        request: request, sessionId: str):
+        request: request):
     file = route["servefile"]["file"]
     if "(" in selectedPath:
         match = re.search(selectedPath, request.path)
@@ -31,27 +31,9 @@ def run(app: Flask, selectedPath: str, route: object,
         fileToServe = join(config.ROOT, file[random.randint(0, len(file) - 1)])
     else:
         fileToServe = join(config.ROOT, file)
+    
 
     pathInfo = pathlib.Path(fileToServe)
-    if "watermark" in route["servefile"] and route["servefile"]["watermark"] and pathInfo.suffix.replace(
-            ".", "") in config.getConfigurationValue("image", "images").replace(r"\s", "").split(","):
-        tmpPath = join(
-            config.getConfigurationValue(
-                "image",
-                "workdir"),
-            pathInfo.name +
-            pathInfo.suffix)
-        now = datetime.now().isoformat()
-        original = Image.open(fileToServe)
-        watermark = Image.new("RGBA", original.size)
-        waterdraw = ImageDraw.ImageDraw(watermark, "RGBA")
-        waterdraw.text(
-            (4, 2), "%s %s" %
-            (config.getConfigurationValue(
-                "image", "watermark"), now))
-        original.paste(watermark, None, watermark)
-        original.save(tmpPath)
-        return send_file(tmpPath, as_attachment=False)
     if "render_template" in route["servefile"] and route["servefile"]["render_template"] == True:
         getValues = http.getString(request)
         return render_template(
