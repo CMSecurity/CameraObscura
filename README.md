@@ -29,7 +29,6 @@ IP Cameras are often misused for wide range malware campaigns. The purpose of th
   - [ ] SSH/ Telnet (using cowrie)
 - [ ] Configuration
   - [x] Company Logos (via config/templates)
-  - [x] Branding (via config/ templates)
   - [ ] Service/ Port redirect
   - [x] Routes
 - [ ] Deployment/ Analysis/ Usage
