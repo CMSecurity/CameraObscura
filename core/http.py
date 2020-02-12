@@ -75,16 +75,15 @@ def handleRoute(path):
     """
     global ROUTES
     global LASTROUTE
-    get = encode(request.args, unpicklable=False)
-    post = encode(request.form, unpicklable=False)
+    get = request.args
+    post = request.form
+    userAgent = request.headers.get('User-Agent')
     target = path
     if target == "":
         target = "/"
 
-    logMessage = "{0} Request => Target {1}, GET {2}, POST {3}".format(
-        request.method, target, get, post)
-    logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), logMessage,
-                "http", False, request.remote_addr, 0.0, sessionId(request))
+    logMessage = "{0} {1}".format(
+        request.method, target, get, post, userAgent)
 
     selectedRoute = None
     selectedPath = None
@@ -101,20 +100,18 @@ def handleRoute(path):
         selectedPath = ""
 
     if selectedRoute is not None:
-        logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), "{0} Request, Client {1}".format(
-            request.method, request.headers.get('User-Agent')), "http", False, request.remote_addr, 0.0, sessionId(request))
+        logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), logMessage, False, request.remote_addr,useragent=userAgent, get=get, post=post)
         route = selectedRoute
         LASTROUTE = route
         for action in route["actions"]:
             result = actions.run(action, app, selectedPath,
-                                 route, request, sessionId(request))
+                                 route, request)
             if isinstance(result, bool) and result is False:
                 abort(403)
             elif result is not None and isinstance(result, bool) is False:
                 return result
     else:
-        logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), "{0} Request, Client {1}, Result 404".format(
-            request.method, request.headers.get('User-Agent')), "http", True, request.remote_addr, 0.0, None)
+        logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), logMessage, True, request.remote_addr)
         abort(404)
 
 
@@ -129,16 +126,6 @@ def getString(requestObj) -> str:
     return "?" + get
 
 
-def sessionId(requestObj) -> str:
-    """
-    Generates a pseudo session id based on the given request
-    """
-    userAgent = str(requestObj.headers.get('User-Agent'))
-    addr = requestObj.remote_addr
-    raw = userAgent + addr
-    return hashlib.sha224(raw.encode('utf-8')).hexdigest()
-
-
 def serve(path: str):
     """
     Start the server
@@ -147,7 +134,6 @@ def serve(path: str):
     global ROUTES
     global ROOT
     ROOT = path
-    util.branding()
     template = config.getConfigurationValue("http", "template")
     if template is None:
         raise Exception("No template is configured")
