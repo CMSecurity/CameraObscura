@@ -14,7 +14,7 @@ from core import config, util, logging
 
 
 def run(app, selectedPath: str, route: object,
-        requestObj, sessionId: str):
+        requestObj):
     """
     Executes the catchfile action
     """
@@ -33,20 +33,14 @@ def run(app, selectedPath: str, route: object,
                                 datetime.now(),
                                 "File {0} uploaded to dl/{1}".format(file.filename,
                                                                      hashcode),
-                                "http",
                                 False,
-                                requestObj.remote_addr,
-                                0.0,
-                                sessionId)
+                                requestObj.remote_addr)
                 else:
                     remove(tmpFile)
                     logging.log(
                         logging.EVENT_ID_UPLOAD,
                         datetime.now(),
                         "Not storing duplicate content {1}".format(file.filename),
-                        "http",
                         False,
-                        requestObj.remote_addr,
-                        0.0,
-                        sessionId)
+                        requestObj.remote_addr)
     return None
