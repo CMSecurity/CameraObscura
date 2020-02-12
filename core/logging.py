@@ -28,38 +28,34 @@ class LogEntry():
     eventId: ""
     timestamp: None
     message: ""
-    system: ""
     isError: 0
     src_ip: ""
-    duration: 0.0
-    session: None
     sensor: ""
+    kwargs: None
 
-    def __init__(self, eventId: str, timestamp: datetime, message: str, system: str,
-                 isError: bool, src_ip: str, duration: float, session: str, sensor: str):
+    def __init__(self, eventId: str, timestamp: datetime, message: str,
+                 isError: bool, src_ip: str, sensor: str, **kwargs):
         self.eventId = eventId
         self.timestamp = timestamp
         self.message = message
-        self.system = system
         self.isError = isError
         self.src_ip = src_ip
-        self.duration = duration
-        self.session = session
         self.sensor = sensor
+        self.kwargs = kwargs
 
     def __repr__(self):
         return "[{0}, {1}] {2}: {3} {4}@{5}".format(
             self.timestamp, self.duration, self.eventId, self.message, self.src_ip, self.sensor)
 
 
-def log(eventId: str, timestamp: datetime, message: str, system: str,
-        isError: bool, src_ip: str, duration: float, session: str) -> bool:
+def log(eventId: str, timestamp: datetime, message: str, 
+        isError: bool, src_ip: str, **kwargs) -> bool:
     """
     Logs an event
     """
     sensor = config.getConfigurationValue("honeypot", "sensor")
-    entry = LogEntry(eventId, timestamp, message, system,
-                     isError, src_ip, duration, session, sensor)
+    entry = LogEntry(eventId, timestamp, message,
+                     isError, src_ip, sensor, **kwargs)
     selectedLogMethod = config.getConfigurationValue("log", "method")
     # allow only whitelisted method calls
     if selectedLogMethod is not None and selectedLogMethod in [
@@ -149,4 +145,11 @@ def encodeLogEntry(logEntry: LogEntry) -> str:
     @param entry: the log entry
     @return: the JSON string
     """
+    raw = logEntry.__dict__
+    if logEntry.kwargs != {}:
+        for key, value in logEntry.kwargs.items():
+            raw[key] = value
+
+    del logEntry.kwargs
+    
     return encode(logEntry, unpicklable=False)
