@@ -1,6 +1,4 @@
-# CameraObscura
-
-IP Cam Honeypot
+Camera**Obscura** - IP Cam Honeypot
 
 [![Build Status](https://travis-ci.org/RoastingMalware/CameraObscura.svg?branch=master)](https://travis-ci.org/RoastingMalware/CameraObscura)
 
@@ -46,6 +44,7 @@ Python3
 - Don't run the honeypot as root
 - Don't run the honeypot on a productive environment
 - Use a dedicated, isolated environment (like `qemu`, `lxd`, `lxc` or `docker`)
+- It's still in development :)
 
 ## License
 
