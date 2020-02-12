@@ -9,4 +9,4 @@ RUN groupadd -r obscura && useradd -r -g obscura -d /cameraobscura -s /sbin/nolo
 RUN chmod +x obscura.sh
 RUN chown obscura:obscura /cameraobscura -R
 USER obscura
-CMD ./obscura.sh
+CMD python3 main.py
