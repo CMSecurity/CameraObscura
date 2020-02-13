@@ -17,7 +17,6 @@ from core.actions import *
 from pathlib import Path
 
 app = Flask(__name__, template_folder=join(config.ROOT, 'templates'))
-app.config["UPLOAD_FOLDER"] = "./dl/"
 app.config["CACHE_TYPE"] = "null"
 app.url_map.strict_slashes = False
 ROUTES = None
