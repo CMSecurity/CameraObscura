@@ -7,13 +7,15 @@ This module http related functionality
 
 
 from datetime import datetime
-from os.path import join, isfile
+from os.path import join, isfile, isdir
 import re
 import hashlib
 from jsonpickle import decode, encode
 from flask import Flask, request, abort, render_template
 from core import config, logging, util, actions
 from core.actions import *
+from pathlib import Path
+
 app = Flask(__name__, template_folder=join(config.ROOT, 'templates'))
 app.config["UPLOAD_FOLDER"] = "./dl/"
 app.config["CACHE_TYPE"] = "null"
@@ -140,6 +142,12 @@ def serve(path: str):
     routesFiles = join(config.ROOT, "templates", template, "routes.json")
     if isfile(routesFiles) is False:
         raise FileNotFoundError("Routes configuration was not found")
+    
+    downloadDir = config.getConfigurationValue("honeypot", "downloadDir")
+    if not isdir(downloadDir):
+        Path(downloadDir).mkdir(parents=True, exist_ok=True)
+        logging.log(logging.EVENT_ID_DOWNLOAD_FOLDER_CREATE, datetime.now(), "Created download folder", True, request.remote_addr)
+
     ROUTES = parseRoutes(routesFiles)
     app.run(
         debug=config.getConfigurationValue("honeypot", "debug"),
