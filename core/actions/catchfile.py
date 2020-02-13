@@ -7,10 +7,19 @@ Catches uploaded files from HTTP POST requestObjs
 
 from shutil import move
 from os import path, remove
-from os.path import join
+from os.path import join, isdir, isfile
 from datetime import datetime
 from flask import request
 from core import config, util, logging
+import random
+import string
+
+def getRandomFilename():
+    """
+    Returns a random string file name
+    """
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(25))
 
 
 def run(app, selectedPath: str, route: object,
@@ -20,27 +29,18 @@ def run(app, selectedPath: str, route: object,
     """
     if requestObj.method == 'POST':
         for key in requestObj.files:
-            file = requestObj.files.get(key)
-            if file.filename != "":
-                workdir = config.getConfigurationValue("honeypot", "workdir")
-                tmpFile = join(workdir, file.filename)
-                file.save(tmpFile)
-                hashcode = util.getChecksum(tmpFile)
-                dlPath = join(app.config['UPLOAD_FOLDER'], hashcode)
-                if path.isfile(dlPath) is False:
-                    move(tmpFile, dlPath)
-                    logging.log(logging.EVENT_ID_UPLOAD,
-                                datetime.now(),
-                                "File {0} uploaded to dl/{1}".format(file.filename,
-                                                                     hashcode),
-                                False,
-                                requestObj.remote_addr)
-                else:
-                    remove(tmpFile)
-                    logging.log(
-                        logging.EVENT_ID_UPLOAD,
+            file_object = requestObj.files.get(key)
+            file_name = getRandomFilename()
+            workDir = config.getConfigurationValue("honeypot", "downloadDir")
+            if not isdir(workDir):
+                raise Exception("Download dir not existing")
+            file_path = join(workDir, file_name)
+            if isfile(file_path):
+                raise Exception("File already existing")
+            file_object.save(file_path)
+            logging.log(logging.EVENT_ID_UPLOAD,
                         datetime.now(),
-                        "Not storing duplicate content {1}".format(file.filename),
-                        False,
+                        "Downloaded {0}".format(file_name),
+                        not isfile(file_path),
                         requestObj.remote_addr)
     return None

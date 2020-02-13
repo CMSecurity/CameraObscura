@@ -4,7 +4,7 @@ sensor=obscura
 firmware=1.5-retail-us
 serial=HX21BZ
 model=C2259
-workdir=/tmp/
+downloadDir=/tmp/
 debug=false
 name=camera
 
@@ -19,8 +19,3 @@ passwordregex=pass
 port=8080
 host=0.0.0.0
 template=ugly
-
-[image]
-watermark=Entrance west
-workdir=/tmp/
-images=jpeg,jpg,png
