@@ -15,6 +15,7 @@ from flask import Flask, request, abort, render_template
 from core import config, logging, util, actions
 from core.actions import *
 from pathlib import Path
+import urllib
 
 app = Flask(__name__, template_folder=join(config.ROOT, 'templates'))
 app.config["CACHE_TYPE"] = "null"
@@ -77,6 +78,15 @@ def handleRoute(path):
     global ROUTES
     global LASTROUTE
     get = request.args
+    query_string = request.query_string.decode("utf-8")
+
+    # if the query_string is an %-encoded query string (contains %3) -> Reparse the string to get the dictionary
+    # Flask seems not to unquote them and puts the complete query string as a key into the request.args dictionary, which is hard to log
+    if "%3" in query_string:
+        unquoted = urllib.parse.unquote(query_string)
+        get_params = urllib.parse.parse_qs(unquoted)
+        get = get_params
+
     post = request.form
     userAgent = request.headers.get('User-Agent')
     target = path
