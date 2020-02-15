@@ -11,7 +11,6 @@ from datetime import datetime
 from os.path import join
 import pathlib
 from flask import Flask, request, send_file, render_template
-from PIL import Image, ImageDraw, ImageEnhance
 from core import config, logging, http
 
 
