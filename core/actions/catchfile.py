@@ -5,21 +5,12 @@
 Catches uploaded files from HTTP POST requestObjs
 """
 
-from shutil import move
-from os import path, remove
+import hashlib
+import os
+
 from os.path import join, isdir, isfile, isabs
 from datetime import datetime
-from flask import request
-from core import config, util, logging
-import random
-import string
-
-def getRandomFilename():
-    """
-    Returns a random string file name
-    """
-    letters = string.ascii_lowercase
-    return ''.join(random.choice(letters) for i in range(25))
+from core import config, logging
 
 
 def run(app, selectedPath: str, route: object,
@@ -30,19 +21,31 @@ def run(app, selectedPath: str, route: object,
     if requestObj.method == 'POST':
         for key in requestObj.files:
             file_object = requestObj.files.get(key)
-            file_name = getRandomFilename()
+            # shasum = hashlib.sha224(copy.copy(file_object).read()).hexdigest()
+            filename = str(datetime.now().timestamp())
             downloadDir = config.getConfigurationValue("honeypot", "downloadDir")
+
             if not isabs(downloadDir):
                 downloadDir = join(config.ROOT, downloadDir)
             if not isdir(downloadDir):
                 raise Exception("Download dir not existing")
-            file_path = join(downloadDir, file_name)
-            if isfile(file_path):
-                raise Exception("File already existing")
+
+            file_path = join(downloadDir, filename)
             file_object.save(file_path)
+
+            shasum = hashlib.sha256()
+            with open(file_path, 'rb') as f:
+                while True:
+                    data = f.read(65536)
+                    if not data:
+                        break
+                    shasum.update(data)
+            hashed_filepath = join(downloadDir, shasum.hexdigest())
+            os.rename(file_path, hashed_filepath)
+
             logging.log(logging.EVENT_ID_UPLOAD,
                         datetime.now(),
-                        "Downloaded {0}".format(file_name),
+                        "Uploaded {0}".format(shasum.hexdigest()),
                         not isfile(file_path),
-                        requestObj.remote_addr)
-    return None
+                        requestObj.remote_addr,
+                        shasum=shasum.hexdigest())
