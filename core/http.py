@@ -96,6 +96,7 @@ def handleRoute(path):
     selectedPath = None
     for value in ROUTES:
         needle = path + getString(request)
+        unquoted_needle = urllib.parse.unquote(needle)
         if path and path[0] != "." and value != "" and re.match(
                 value, needle):
             selectedRoute = ROUTES[value]
@@ -107,7 +108,7 @@ def handleRoute(path):
         selectedPath = ""
 
     if selectedRoute is not None:
-        logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), logMessage, False, request.remote_addr, useragent=userAgent, get=needle, post=post)
+        logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), logMessage, False, request.remote_addr, useragent=userAgent, get=unquoted_needle, post=post)
         route = selectedRoute
         LASTROUTE = route
         for action in route["actions"]:
@@ -118,7 +119,7 @@ def handleRoute(path):
             elif result is not None and isinstance(result, bool) is False:
                 return result
     else:
-        logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), logMessage, True, request.remote_addr, useragent=userAgent, get=needle, post=post)
+        logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), logMessage, True, request.remote_addr, useragent=userAgent, get=unquoted_needle, post=post)
         abort(404)
 
 
