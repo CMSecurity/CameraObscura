@@ -8,7 +8,6 @@ Misc. functionality used by several modules
 from os.path import join
 from sys import version
 import hashlib
-import termcolor
 from core import config, constants
 
 def getChecksum(filename: str) -> str:

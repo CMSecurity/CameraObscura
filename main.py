@@ -5,9 +5,7 @@
 Program main entrance point
 """
 
-import sys
 from os.path import isfile, join
-import termcolor
 from core import http, config
 
 if isfile(join(config.ROOT, "configuration.cfg")) is False:
