@@ -7,7 +7,7 @@ Catches uploaded files from HTTP POST requestObjs
 
 from shutil import move
 from os import path, remove
-from os.path import join, isdir, isfile
+from os.path import join, isdir, isfile, isabs
 from datetime import datetime
 from flask import request
 from core import config, util, logging
@@ -31,10 +31,12 @@ def run(app, selectedPath: str, route: object,
         for key in requestObj.files:
             file_object = requestObj.files.get(key)
             file_name = getRandomFilename()
-            workDir = config.getConfigurationValue("honeypot", "downloadDir")
-            if not isdir(workDir):
+            downloadDir = config.getConfigurationValue("honeypot", "downloadDir")
+            if not isabs(downloadDir):
+                downloadDir = join(config.ROOT, downloadDir)
+            if not isdir(downloadDir):
                 raise Exception("Download dir not existing")
-            file_path = join(workDir, file_name)
+            file_path = join(downloadDir, file_name)
             if isfile(file_path):
                 raise Exception("File already existing")
             file_object.save(file_path)

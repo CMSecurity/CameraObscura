@@ -7,7 +7,7 @@ This module http related functionality
 
 
 from datetime import datetime
-from os.path import join, isfile, isdir
+from os.path import join, isfile, isdir, isabs
 import re
 import hashlib
 from jsonpickle import decode, encode
@@ -153,9 +153,14 @@ def serve(path: str):
         raise FileNotFoundError("Routes configuration was not found")
     
     downloadDir = config.getConfigurationValue("honeypot", "downloadDir")
+
+    # if the download dir is not absolute, create a proper absolute path to avoid cwd issues
+    if not isabs(downloadDir):
+        downloadDir = join(config.ROOT, downloadDir)
+
     if not isdir(downloadDir):
         Path(downloadDir).mkdir(parents=True, exist_ok=True)
-        logging.log(logging.EVENT_ID_DOWNLOAD_FOLDER_CREATE, datetime.now(), "Created download folder", True, request.remote_addr)
+        logging.log(logging.EVENT_ID_DOWNLOAD_FOLDER_CREATE, datetime.now(), "Created download folder", not isdir(downloadDir), None)
 
     ROUTES = parseRoutes(routesFiles)
     app.run(
