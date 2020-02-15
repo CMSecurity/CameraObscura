@@ -53,14 +53,19 @@
   "admin.php":{
     "actions": [
       "sleep",
+      "authorize",
       "servefile"
     ],
+    "authorize": {
+      "username": "username",
+      "password": "password"
+    },
     "sleep":{
       "duration": 2
     },
     "servefile":{
       "file": "/ugly/admin.html",
-      "render_template": true
+      "render_template": true,
     },
     "headers": {
       "Server": "lighttpd",

@@ -9,6 +9,7 @@ Main management entry point for http actions
 """
 
 __all__ = [
+    'authorize',
     'catchfile',
     'servefile',
     'text',

@@ -89,9 +89,7 @@ def handleRoute(path):
 
     post = request.form
     userAgent = request.headers.get('User-Agent')
-    target = path
-    if target == "":
-        target = "/"
+    target = request.url              
 
     logMessage = "{0} {1}".format(
         request.method, target, get, post, userAgent)
