@@ -65,7 +65,7 @@
     },
     "servefile":{
       "file": "/ugly/admin.html",
-      "render_template": true,
+      "render_template": true
     },
     "headers": {
       "Server": "lighttpd",

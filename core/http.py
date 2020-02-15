@@ -9,10 +9,9 @@ This module http related functionality
 from datetime import datetime
 from os.path import join, isfile, isdir, isabs
 import re
-import hashlib
-from jsonpickle import decode, encode
+from jsonpickle import decode
 from flask import Flask, request, abort, render_template
-from core import config, logging, util, actions
+from core import config, logging, actions
 from core.actions import *
 from pathlib import Path
 import urllib
@@ -84,12 +83,11 @@ def handleRoute(path):
     # Flask seems not to unquote them and puts the complete query string as a key into the request.args dictionary, which is hard to log
     if "%3" in query_string:
         unquoted = urllib.parse.unquote(query_string)
-        get_params = urllib.parse.parse_qs(unquoted)
-        get = get_params
+        get = unquoted
 
     post = request.form
     userAgent = request.headers.get('User-Agent')
-    target = request.url              
+    target = request.url
 
     logMessage = "{0} {1}".format(
         request.method, target, get, post, userAgent)
@@ -109,7 +107,7 @@ def handleRoute(path):
         selectedPath = ""
 
     if selectedRoute is not None:
-        logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), logMessage, False, request.remote_addr,useragent=userAgent, get=get, post=post)
+        logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), logMessage, False, request.remote_addr, useragent=userAgent, get=needle, post=post)
         route = selectedRoute
         LASTROUTE = route
         for action in route["actions"]:
@@ -120,7 +118,7 @@ def handleRoute(path):
             elif result is not None and isinstance(result, bool) is False:
                 return result
     else:
-        logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), logMessage, True, request.remote_addr)
+        logging.log(logging.EVENT_ID_HTTP_REQUEST, datetime.now(), logMessage, True, request.remote_addr, useragent=userAgent, get=needle, post=post)
         abort(404)
 
 
@@ -149,7 +147,7 @@ def serve(path: str):
     routesFiles = join(config.ROOT, "templates", template, "routes.json")
     if isfile(routesFiles) is False:
         raise FileNotFoundError("Routes configuration was not found")
-    
+
     downloadDir = config.getConfigurationValue("honeypot", "downloadDir")
 
     # if the download dir is not absolute, create a proper absolute path to avoid cwd issues
