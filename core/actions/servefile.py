@@ -68,24 +68,25 @@ def run(app: Flask, selectedPath: str, route: object,
     watermark = "watermark" in route["servefile"]
     if watermark:
         watermark_obj = route["servefile"]["watermark"]
-        x_coord = watermark_obj["x"]
-        y_coord = watermark_obj["y"]
-        text = watermark_obj["text"]
-        im = Image.open(fileToServe)
-        
-        if text in variables:
-            text = str(variables[text])
-        ImageDraw.Draw(
-         im 
-        ).text(
-            (x_coord, y_coord),  # Coordinates
-            text,
-            (0, 0, 0)  # Color
-        )
-        mime = im.get_format_mimetype()
-        format = im.format
-        response = None
-        im.save(fileToServe + "obscura", format)
-        response = send_file(fileToServe + "test", mimetype=mime, as_attachment=False,attachment_filename="image")
-        return response
+        if isinstance(watermark_obj, dict):
+            x_coord = watermark_obj["x"]
+            y_coord = watermark_obj["y"]
+            text = watermark_obj["text"]
+            im = Image.open(fileToServe)
+            
+            if text in variables:
+                text = str(variables[text])
+            ImageDraw.Draw(
+             im 
+            ).text(
+                (x_coord, y_coord),  # Coordinates
+                text,
+                (0, 0, 0)  # Color
+            )
+            mime = im.get_format_mimetype()
+            format = im.format
+            response = None
+            im.save(fileToServe + "obscura", format)
+            response = send_file(fileToServe + "test", mimetype=mime, as_attachment=False,attachment_filename="image")
+            return response
     return send_file(fileToServe, as_attachment=False)
